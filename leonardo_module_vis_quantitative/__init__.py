@@ -7,19 +7,19 @@ LOG = logging.getLogger(__name__)
 
 from .widget import *
 
-default_app_config = 'leonardo_module_vis_temporal.NavConfig'
+default_app_config = 'leonardo_module_vis_quantitative.NavConfig'
 
 
 class Default(object):
 
-    optgroup = ('Temporal vis')
+    optgroup = ('Quantitatve vis')
 
     @property
     def apps(self):
 
         return [
 
-            'leonardo_module_vis_temporal',
+            'leonardo_module_vis_quantitative',
 
         ]
 
@@ -31,8 +31,8 @@ class Default(object):
 
 class NavConfig(AppConfig, Default):
 
-    name = 'leonardo_module_vis_temporal'
-    verbose_name = "Temporal Visualizations Module"
+    name = 'leonardo_module_vis_quantitative'
+    verbose_name = "Quantitative Visualization Module"
 
 
 default = Default()
