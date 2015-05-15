@@ -1,2 +1,3 @@
 
-from polarclock.models import PolarClockWidget
+from horizonchart.models import HorizonChartWidget
+from linechart.models import LineChartWidget
