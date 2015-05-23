@@ -7,7 +7,7 @@ from math import floor
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from yamlfield.fields import YAMLField
+#from yamlfield.fields import YAMLField
 
 from leonardo.module.web.models import Widget
 
@@ -32,7 +32,7 @@ STEP_FUNS = (
 class QuantitativeDataSource(models.Model):
     type  = models.CharField(max_length=255, verbose_name=_("type"), default='graphite', choices=SOURCE_TYPES)
     name = models.CharField(max_length=255, verbose_name=_("name"))
-    data = YAMLField(verbose_name=_("data"), help_text=_('For graphite set: host, port, ssl, user, passwd'))
+#    data = YAMLField(verbose_name=_("data"), help_text=_('For graphite set: host, port, ssl, user, passwd'))
 
     def __unicode__(self):
         return self.name
@@ -45,7 +45,7 @@ class QuantitativeGraph(models.Model):
     data_source = models.ForeignKey(QuantitativeDataSource, verbose_name=_('data source'))
     type  = models.CharField(max_length=255, verbose_name=_("type"), default='graphite', choices=SOURCE_TYPES)
     name = models.CharField(max_length=255, verbose_name=_("name"))
-    data = YAMLField(verbose_name=_("data"), help_text=_('For graphite set: host, port, ssl, user, passwd'))
+#    data = YAMLField(verbose_name=_("data"), help_text=_('For graphite set: host, port, ssl, user, passwd'))
 
     def __unicode__(self):
         return self.name

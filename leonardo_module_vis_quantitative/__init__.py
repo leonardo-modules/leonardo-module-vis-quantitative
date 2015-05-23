@@ -5,7 +5,7 @@ from django.apps import AppConfig
 
 LOG = logging.getLogger(__name__)
 
-from .widget import *
+#from .widget import *
 
 default_app_config = 'leonardo_module_vis_quantitative.NavConfig'
 
@@ -26,8 +26,8 @@ class Default(object):
     @property
     def widgets(self):
         return [
-            HorizonChartWidget,
-            LineChartWidget,
+#            HorizonChartWidget,
+#            LineChartWidget,
         ]
 
 class NavConfig(AppConfig, Default):
