@@ -33,6 +33,7 @@ class QuantitativeDataSource(models.Model):
     type  = models.CharField(max_length=255, verbose_name=_("type"), default='graphite', choices=SOURCE_TYPES)
     name = models.CharField(max_length=255, verbose_name=_("name"))
 #    data = YAMLField(verbose_name=_("data"), help_text=_('For graphite set: host, port, ssl, user, passwd'))
+    data = models.TextField(verbose_name=_("data"), help_text=_('For graphite set: host, port, ssl, user, passwd'))
 
     def __unicode__(self):
         return self.name
@@ -46,6 +47,7 @@ class QuantitativeGraph(models.Model):
     type  = models.CharField(max_length=255, verbose_name=_("type"), default='graphite', choices=SOURCE_TYPES)
     name = models.CharField(max_length=255, verbose_name=_("name"))
 #    data = YAMLField(verbose_name=_("data"), help_text=_('For graphite set: host, port, ssl, user, passwd'))
+    data = models.TextField(verbose_name=_("data"), help_text=_('For graphite set: host, port, ssl, user, passwd'))
 
     def __unicode__(self):
         return self.name
