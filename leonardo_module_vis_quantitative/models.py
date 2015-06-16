@@ -16,8 +16,8 @@ SOURCE_TYPES = (
 )
 
 TIME_UNITS = (
-    ('second', _('seconds')), 
-    ('minute', _('minutes')), 
+    ('second', _('seconds')),
+    ('minute', _('minutes')),
     ('hour', _('hours')),
     ('day', _('days')), 
 )
