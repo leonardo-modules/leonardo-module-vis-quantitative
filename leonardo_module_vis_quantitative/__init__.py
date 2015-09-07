@@ -12,7 +12,7 @@ default_app_config = 'leonardo_module_vis_quantitative.NavConfig'
 
 class Default(object):
 
-    optgroup = ('Quantitatve vis')
+    optgroup = ('Quantitative visusalizations')
 
     @property
     def apps(self):
@@ -33,7 +33,7 @@ class Default(object):
 class NavConfig(AppConfig, Default):
 
     name = 'leonardo_module_vis_quantitative'
-    verbose_name = "Quantitative Visualization Module"
+    verbose_name = "Quantitative Visualizations Module"
 
 
 default = Default()

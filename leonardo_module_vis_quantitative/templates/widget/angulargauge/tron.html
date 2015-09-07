@@ -1,0 +1,26 @@
+{% extends widget.get_base_template %}
+
+{% block content %}
+<div id="arc-diagram_{{ widget.fe_identifier }}" class="angular-gauge-tron"></div>
+<script type="text/javascript">
+
+function redraw_angular_gauge_{{ widget.id }}(){
+  var placeholder = '#arc-diagram_{{ widget.fe_identifier }}';
+  var parent_box = $(placeholder).parent();
+  width = parent_box.width();
+  d3.select(placeholder+" svg").remove();
+  angular_gauge({
+    'width': width,
+    'height': width/2,
+    'placeholder': placeholder,
+    'data_source': "{{ widget.get_data }}"
+  });
+}
+
+$(document).ready(function() {
+  redraw_angular_gauge_{{ widget.id }}();
+  window.addEventListener("resize", redraw_angular_gauge_{{ widget.id }});
+});
+
+</script>
+{% endblock %}

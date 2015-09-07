@@ -2,9 +2,9 @@ import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from leonardo_module_vis_quatitative.models import TimeSeriesWidget
+from leonardo_module_vis_quatitative.models import NumericWidget
 
-class AngularGaugeWidget(TimeSeriesWidget):
+class AngularGaugeWidget(NumericWidget):
     """
     Widget which shows angular gauge.
     """
@@ -18,5 +18,5 @@ class AngularGaugeWidget(TimeSeriesWidget):
 
     class Meta:
         abstract = True
-        verbose_name = _("Angular gauge")
-        verbose_name_plural = _("Angular gauges")
+        verbose_name = _("Angular Gauge")
+        verbose_name_plural = _("Angular Gauges")
