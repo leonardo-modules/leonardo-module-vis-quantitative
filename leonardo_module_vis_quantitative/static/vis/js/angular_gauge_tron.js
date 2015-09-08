@@ -1,119 +1,77 @@
 
-// donut charts
-if(parseInt(d3.select('body').style('width'), 10) < 992) {
-	var donut_resize = 0.8;
-} else {
-	var donut_resize = 0.5;
-}
-var donut_radius = 0.9;
-// u3
-var u3 = {w: parseInt(d3.select('div#u3').style('width'), 10)*donut_resize};
-	u3.h = u3.w;
-    u3.radius = Math.min(u3.w, u3.h) / 2;
+function angular_gauge_tron(config) {
 
-	u3.color = ["#3498db", "#FFF"];
+  var donut_radius = 0.9;
 
-	u3.pie = d3.layout.pie()
-    			.sort(null);
+  var gauge = {w: config.width};
+  gauge.h = gauge.w;
+  gauge.radius = Math.min(gauge.w, gauge.h) / 2;
 
-    u3.arc = d3.svg.arc()
-			    .innerRadius(u3.radius-1)
-			    .outerRadius(u3.radius *donut_radius);
+  gauge.color = ["#3498db", "transparent"];
 
-    u3.svg = d3.select("div#u3").append("svg")
-    			.attr("id", "u3-container")
-			    .attr("width", u3.w)
-			    .attr("height", u3.h);
+  gauge.pie = d3.layout.pie()
+        .sort(null);
 
-    u3.g = u3.svg   
+  gauge.arc = d3.svg.arc()
+    .innerRadius(gauge.radius-1)
+    .outerRadius(gauge.radius * donut_radius);
+
+  gauge.svg = d3.select(config.placeholder).append("svg")
+    .attr("width", gauge.w)
+    .attr("height", gauge.h);
+
+  gauge.g = gauge.svg
     .append("g")
-    .attr("transform", "translate(" + (u3.w / 2) + "," + (u3.h / 2) + ")");
+    .attr("transform", "translate(" + (gauge.w / 2) + "," + (gauge.h / 2) + ")");
 
-   u3.path = u3.g.selectAll("path")
-    .data(u3.pie([para.u3, (1-para.u3)]))
-   .enter().append("path")
-    .attr("fill", function(d, i) { return u3.color[i]; })
-    .attr("d", u3.arc)
+  gauge.path = gauge.g.selectAll("path")
+    .data(gauge.pie([config.data, (1-config.data)]))
+    .enter().append("path")
+    .attr("fill", function(d, i) { return gauge.color[i]; })
+    .attr("d", gauge.arc)
     .each(function(d) { this._current = d; });
 
-    u3.text = u3.svg.append("text")
-    			.attr("class", "perc")
-    			.attr("text-anchor","middle")
-    			.attr("x", u3.w/2)
-    			.attr("y", u3.h/2)
-    			.attr("dy", "0.35em")
-       			.text(d3.round(para.u3*100, 2) + " %");
-    d3.select('div#u3')
-    	.append("p")
-    	.attr("class", "donuts")
-    	.html("Cohen's U<sub>3</sub>")    			
+  gauge.text = gauge.svg.append("text")
+    .attr("class", "perc")
+    .attr("text-anchor","middle")
+    .attr("x", gauge.w/2)
+    .attr("y", gauge.h/2)
+    .attr("dy", "0.35em")
+    .text(d3.round(config.data*100, 2) + " %");
 
-// copy text
-function changeInterpretText() {
-	d3.select("span#u3")
-		.text(d3.round(para.u3*100,0));
+  /*
+  d3.select(config.placeholder)
+    .append("p")
+    .attr("class", "donuts")
+    .html("Cohen's U<sub>3</sub>")
+  // copy text
+  function changeInterpretText() {
+    d3.select("span#gauge")
+      .text(d3.round(config.data*100,0));
+  }
+  changeInterpretText();
+  */
 
-}
 
-changeInterpretText();	
-
-function updateEStext(old_u3, old_perc, old_CL, old_NNT) {
-	
-	// update u3 text
-	u3.text
-		.transition()
-		.duration(500)
-		.tween("text", function() {
-		  var i = d3.interpolate(old_u3, para.u3);
-		  return function(t) {
-		    this.textContent = d3.round(i(t)*100, 2) + " %";
-		  }});
-
-}
-
-function arcTween(a) {
+  function arcTween(a) {
     var i = d3.interpolate(this._current, a);
     this._current = i(0);
     return function(t) {
-        return u3.arc(i(t));
+      return gauge.arc(i(t));
     };
-}
+  }
 
-function sliderChange(value) {
-	  var old_u3 = para.u3;
-	  para.u3 = jStat.normal.cdf(para.cohend, 0, 1);	
-	  
-		// update donut charts
-		u3.path.data(u3.pie([para.u3, (1-para.u3)]))
-				.transition()
-				.duration(600)
-				.attrTween("d", arcTween);
-		// update copy text
-		changeInterpretText();								
-	};	
+  function sliderChange(value) {
+      var old_gauge = config.data;
+      config.data = jStat.normal.cdf(para.cohend, 0, 1);
+      
+      // update donut charts
+      gauge.path.data(gauge.pie([config.data, (1-config.data)]))
+          .transition()
+          .duration(600)
+          .attrTween("d", arcTween);
+      // update copy text
+      //changeInterpretText();
+  };
 
-
-// resize
-$(window).on("resize", resize);
-
-function resize() {
-	var aspect = 0.4;
-	var margin = {top: 40, right: 20, bottom: 30, left: 20},
- 	w = parseInt(d3.select('#viz').style('width'), 10);
-	w = w - margin.left - margin.right;
-	h = aspect*w-margin.top - margin.left;
-	
-	// Scales
-	xScale.range([0,w]);
-	yScale.range([0,h]);
-	
-	// Axis
-	xAx.attr("transform", "translate(0," + h + ")")
-		.call(xAxis);  
-	
-	// do the actual resize...
-	svg.attr("width", w + margin.left + margin.right)
-		.attr("height", h + margin.top + margin.bottom);
-		
-		
 }

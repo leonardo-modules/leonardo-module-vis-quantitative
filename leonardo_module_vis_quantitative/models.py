@@ -12,7 +12,10 @@ from django.utils.translation import ugettext_lazy as _
 from leonardo.module.web.models import Widget
 
 SOURCE_TYPES = (
+    ('dummy', _('Test data')),
     ('graphite', _('Graphite')),
+    ('influxdb', _('InfluxDB')),
+    ('opentsdb', _('OpenTSDB')),
 )
 
 TIME_UNITS = (
@@ -47,7 +50,7 @@ class QuantitativeData(models.Model):
     metrics = models.TextField(verbose_name=_("metrics"), help_text=_(''))
 
     def __unicode__(self):
-        return self.name
+        return self.data_source.__unicode__()
 
     class Meta:
         verbose_name = _("Quatitative data")
