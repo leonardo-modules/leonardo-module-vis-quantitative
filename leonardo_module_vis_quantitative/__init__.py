@@ -1,39 +1,34 @@
 
-import logging
+from django.utils.translation import ugettext_lazy as _
 
 from django.apps import AppConfig
 
-LOG = logging.getLogger(__name__)
+from .widget import *
 
-#from .widget import *
+default_app_config = 'leonardo_module_vis_quantitative.Config'
 
-default_app_config = 'leonardo_module_vis_quantitative.NavConfig'
+LEONARDO_OPTGROUP = 'Quantitative Visualizations'
 
+LEONARDO_JS_FILES = [
+    'vis/js/angular_gauge_tron.js',
+]
 
-class Default(object):
+LEONARDO_SCSS_FILES = [
+    'vis/scss/angular_gauge_tron.scss',
+]
 
-    optgroup = ('Quantitative visusalizations')
+LEONARDO_APPS = [
+    'leonardo_module_vis_quantitative',
+]
 
-    @property
-    def apps(self):
+LEONARDO_WIDGETS = [
+    AngularGaugeWidget,
+#    HorizonChartWidget,
+#    LineChartWidget,
+#    StackedAreaChartWidget,
+]
 
-        return [
-
-            'leonardo_module_vis_quantitative',
-
-        ]
-
-    @property
-    def widgets(self):
-        return [
-#            HorizonChartWidget,
-#            LineChartWidget,
-        ]
-
-class NavConfig(AppConfig, Default):
+class Config(AppConfig):
 
     name = 'leonardo_module_vis_quantitative'
-    verbose_name = "Quantitative Visualizations Module"
-
-
-default = Default()
+    verbose_name = _(LEONARDO_OPTGROUP)

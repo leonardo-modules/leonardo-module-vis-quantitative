@@ -2,7 +2,7 @@ import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from leonardo_module_vis_quatitative.models import NumericWidget
+from leonardo_module_vis_quantitative.models import NumericWidget
 
 class AngularGaugeWidget(NumericWidget):
     """
@@ -10,8 +10,8 @@ class AngularGaugeWidget(NumericWidget):
     """
     major_ticks = models.IntegerField(verbose_name=_('major ticks'), default=5)
     minor_ticks = models.IntegerField(verbose_name=_('minor ticks'), default=2)
-    threshold_warning = models.IntegerField(verbose_name=_('warning threshold'), default=70)
-    threshold_critical = models.IntegerField(verbose_name=_('critical threshold'), default=90)
+    warning_threshold = models.IntegerField(verbose_name=_('warning threshold'), default=70)
+    critical_threshold = models.IntegerField(verbose_name=_('critical threshold'), default=90)
 
     def widget_data(self, request):
         return self.get_graphite_last_value()
