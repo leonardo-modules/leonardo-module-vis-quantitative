@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name='QuantitativeData',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('metrics', models.TextField(help_text='', verbose_name='metrics')),
+                ('metrics', models.TextField(verbose_name='metrics')),
             ],
             options={
                 'verbose_name': 'Quatitative data',
@@ -38,5 +38,10 @@ class Migration(migrations.Migration):
             model_name='quantitativedata',
             name='data_source',
             field=models.ForeignKey(verbose_name='data source', to='leonardo_module_vis_quantitative.QuantitativeDataSource'),
+        ),
+        migrations.AlterField(
+            model_name='quantitativedatasource',
+            name='type',
+            field=models.CharField(default=b'graphite', max_length=255, verbose_name='type', choices=[(b'dummy', 'Test data'), (b'graphite', 'Graphite'), (b'influxdb', 'InfluxDB'), (b'opentsdb', 'OpenTSDB')]),
         ),
     ]
