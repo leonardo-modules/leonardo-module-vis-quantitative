@@ -10,11 +10,11 @@ default_app_config = 'leonardo_module_vis_quantitative.Config'
 LEONARDO_OPTGROUP = 'Quantitative Visualizations'
 
 LEONARDO_JS_FILES = [
-    'vis/js/angular_gauge_tron.js',
+    'vis/js/angular_gauge.js',
 ]
 
 LEONARDO_SCSS_FILES = [
-    'vis/scss/angular_gauge_tron.scss',
+    'vis/scss/angular_gauge.scss',
 ]
 
 LEONARDO_APPS = [
