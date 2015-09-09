@@ -47,7 +47,7 @@ class QuantitativeDataSource(models.Model):
 
 class QuantitativeData(models.Model):
     data_source = models.ForeignKey(QuantitativeDataSource, verbose_name=_('data source'))
-    metrics = models.TextField(verbose_name=_("metrics"), help_text=_(''))
+    metrics = models.TextField(verbose_name=_("metrics"))
 
     def __unicode__(self):
         return self.data_source.__unicode__()
