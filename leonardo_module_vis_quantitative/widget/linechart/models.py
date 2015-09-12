@@ -37,5 +37,5 @@ class LineChartWidget(TimeSeriesWidget):
 
     class Meta:
         abstract = True
-        verbose_name = _("Line chart")
-        verbose_name_plural = _("Line charts")
+        verbose_name = _("Line Chart")
+        verbose_name_plural = _("Line Charts")

@@ -22,5 +22,5 @@ class HorizonChartWidget(TimeSeriesWidget):
 
     class Meta:
         abstract = True
-        verbose_name = _("Horizon chart")
-        verbose_name_plural = _("Horizon charts")
+        verbose_name = _("Horizon Chart")
+        verbose_name_plural = _("Horizon Charts")

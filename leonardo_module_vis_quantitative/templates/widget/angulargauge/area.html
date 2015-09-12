@@ -1,26 +1,36 @@
 {% extends widget.get_base_template %}
 
 {% block content %}
-<div id="angular-gauge_{{ widget.fe_identifier }}" class="angular-gauge-tron"></div>
+<div id="angular_gauge_{{ widget.fe_identifier }}" class="angular-gauge-tron"></div>
 <script type="text/javascript">
 
 function redraw_angular_gauge_{{ widget.id }}(){
-  var placeholder = '#angular-gauge_{{ widget.fe_identifier }}';
+  var placeholder = '#angular_gauge_{{ widget.fe_identifier }}';
   var parent_box = $(placeholder).parent();
   width = parent_box.width();
   d3.select(placeholder+" svg").remove();
-  angular_gauge_tron({
+  //angular_gauge_area({
+  concentric_gauge_area({
     'width': width,
     'height': width,
-    'data': .59,
     'placeholder': placeholder,
+    'data': Math.round(Math.random() * 100) / 100,
     'data_source': "{{ widget.get_data }}"
   });
+}
+
+function loop_angular_gauge_{{ widget.id }}(){
+  redraw_angular_gauge_{{ widget.id }}();
+  setTimeout(function() {
+    loop_angular_gauge_{{ widget.id }}();
+  }, 5000);
 }
 
 $(document).ready(function() {
   redraw_angular_gauge_{{ widget.id }}();
   window.addEventListener("resize", redraw_angular_gauge_{{ widget.id }});
+
+  //loop_angular_gauge_{{ widget.id }}();
 });
 
 </script>

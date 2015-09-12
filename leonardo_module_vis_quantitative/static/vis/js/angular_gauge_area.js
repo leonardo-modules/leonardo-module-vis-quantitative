@@ -1,5 +1,5 @@
 
-function angular_gauge_tron(config) {
+function angular_gauge_area(config) {
 
   var donut_radius = 0.9;
 
