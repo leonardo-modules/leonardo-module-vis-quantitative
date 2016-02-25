@@ -4,7 +4,7 @@ import time
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from leonardo_module_vis_quatitative.models import TimeSeriesWidget
+from leonardo_module_vis_quantitative.models import TimeSeriesWidget
 
 INTERPOLATION_CHOICES = (
     ('linear', _('linear')), 
@@ -20,7 +20,14 @@ class LineChartWidget(TimeSeriesWidget):
     interpolation = models.CharField(max_length=55, verbose_name=_("interpolation"), default='linear', choices=INTERPOLATION_CHOICES)
     align_to_from = models.BooleanField(verbose_name=_('align to from'), default=False)
 
-    def widget_data(self, request):
+    def get_data(self):
+        if self.data.data_source.type == "graphite":
+            return self.get_graphite_data()
+        else:
+            return None
+
+    def get_data_from_graphite(self):
+
         end = self.relative_start() + self.get_duration_delta()
 
         data = {
@@ -31,7 +38,7 @@ class LineChartWidget(TimeSeriesWidget):
             'high_horizon': self.high_horizon,
             'start': str(long(time.mktime(self.relative_start().timetuple()))),
             'end': str(long(time.mktime(end.timetuple()))),
-            'host': self.get_host()
+            'host': self.data.get_host()
         }
         return data
 

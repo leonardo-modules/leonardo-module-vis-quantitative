@@ -2,12 +2,16 @@
 
 {% block content %}
 <div id="angular_gauge_{{ widget.fe_identifier }}"></div>
+
 <script type="text/javascript">
 
 function redraw_angular_gauge_{{ widget.id }}(){
-  var placeholder = '#angular_gauge_{{ widget.fe_identifier }}';
-  var parent_box = $(placeholder).parent();
-  width = parent_box.width();
+  var placeholder = '#angular_gauge_{{ widget.fe_identifier }}',
+      parent_box = $(placeholder).parent(),
+      width = parent_box.width(),
+      min,
+      max;
+
   d3.select(placeholder+" svg").remove();
 
   config = {
@@ -22,6 +26,7 @@ function redraw_angular_gauge_{{ widget.id }}(){
   };
 
   var range = config.max - config.min;
+
   config.yellowZones = [{ from: config.min + range*0.75, to: config.min + range*0.9 }];
   config.redZones = [{ from: config.min + range*0.9, to: config.max }];
   
@@ -40,7 +45,6 @@ function redraw_angular_gauge_{{ widget.id }}(){
 $(document).ready(function() {
   redraw_angular_gauge_{{ widget.id }}();
   window.addEventListener("resize", redraw_angular_gauge_{{ widget.id }});
-
 });
 
 </script>

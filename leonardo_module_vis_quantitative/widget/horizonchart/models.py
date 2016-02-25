@@ -2,7 +2,7 @@ import datetime
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from leonardo_module_vis_quatitative.models import TimeSeriesWidget
+from leonardo_module_vis_quantitative.models import TimeSeriesWidget
 
 class HorizonChartWidget(TimeSeriesWidget):
     """
