@@ -107,13 +107,25 @@ class TemporalDataWidget(Widget):
 
             request = requests.get(url, params=params)
             json_dict = json.loads(request.text)
-
-            data.append(json_dict[0]['datapoints'])
+            values = []
+            for item in json_dict[0]['datapoints']:
+                values.append({
+                    'x': item[1],
+                    'y': item[0],
+                })
+            datum = {
+                'key': metric['name'],
+                'values': values
+            }
+            data.append(datum)
+#            data.append(json_dict[0]['datapoints'])
 
         # WIP: data[0][0] je [value, timestamp] - zformatovat na [{x: value, y:
         # normalni datum}...]
 
         return data
+
+
 
     def get_graphite_last_value(self):
         url = "%s/render" % self.data.get_host()

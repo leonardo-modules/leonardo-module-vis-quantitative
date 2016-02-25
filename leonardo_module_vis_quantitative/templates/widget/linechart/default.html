@@ -1,40 +1,9 @@
 {% extends widget.get_base_template %}
 
-{% block content %}-----
-==={{ widget.get_data }} ={{ widget.data.data_source.type }} =
+{% block content %}
 <div id="line_chart_{{ widget.fe_identifier }}"><svg></svg></div>
 
 <script type="text/javascript">
-
-function sinAndCos() {
-  var sin = [],sin2 = [],
-      cos = [];
-
-  //Data is represented as an array of {x,y} pairs.
-  for (var i = 0; i < 100; i++) {
-    sin.push({x: i, y: Math.sin(i/10)});
-    sin2.push({x: i, y: Math.sin(i/10) *0.25 + 0.5});
-    cos.push({x: i, y: .5 * Math.cos(i/10)});
-  }
-
-  console.log(sin);
-
-  //Line chart data should be sent as an array of series objects.
-  return [
-    {
-      values: sin,      //values - represents the array of {x,y} data points
-      key: 'Sine Wave', //key  - the name of the series.
-    },
-    {
-      values: cos,
-      key: 'Cosine Wave',
-    },
-    {
-      values: sin2,
-      key: 'Another sine wave',
-    }
-  ];
-}
 
 function set_linechart_{{ widget.id }}_height() {
   var containerHeight = $("#{{ widget.fe_identifier }}").height(),
@@ -51,18 +20,22 @@ $(document).ready(function() {
                   .showLegend(true)      
                   .showYAxis(true)       
                   .showXAxis(true)
-                  .useInteractiveGuideline(false)
-    ;
+                  .interpolate("{{ widget.interpolation }}")
+                  .forceY([0, 0.01])
+                  .useInteractiveGuideline(true);
   
     chart.xAxis    
         .axisLabel('Time (ms)')
-        .tickFormat(d3.format(',r'));
+//        .tickFormat(d3.format(',r'));
+        .tickFormat(function(d){return d3.time.format('%d-%b')(new Date(d*1000));});
   
     chart.yAxis   
         .axisLabel('Voltage (v)')
-        .tickFormat(d3.format('.02f'));
-  
-    var myData = sinAndCos(); 
+        .tickFormat(d3.format('.04f'));
+    {% autoescape off %} 
+    var myData = {{ widget.get_data }};
+    {% endautoescape %}
+   //sinAndCos(); 
   
     d3.select('#line_chart_{{ widget.fe_identifier }} svg')
         .datum(myData)    

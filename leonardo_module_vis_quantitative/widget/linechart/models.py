@@ -1,5 +1,6 @@
 
 import time
+import json
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -7,8 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 from leonardo_module_vis_quantitative.models import TimeSeriesWidget
 
 INTERPOLATION_CHOICES = (
-    ('linear', _('linear')),
     ('cardinal', _('cardinal')),
+    ('linear', _('linear')),
     ('step', _('step')),
 )
 
@@ -25,7 +26,7 @@ class LineChartWidget(TimeSeriesWidget):
 
     def get_data(self):
         if self.data.data_source.type == "graphite":
-            return self.get_graphite_data()
+            return json.dumps(self.get_graphite_data())
         else:
             return None
 
