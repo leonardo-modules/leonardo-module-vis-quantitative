@@ -1,17 +1,16 @@
 # -*- coding:/ utf-8 -*-
 
 import datetime
-import requests
-import yaml
-
-from time import time
 from math import floor
+from time import time
 
+import requests
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from yamlfield.fields import YAMLField
-
 from leonardo.module.web.models import Widget
+from yamlfield.fields import YAMLField
 
 SOURCE_TYPES = (
     ('dummy', _('Test data')),
@@ -24,39 +23,49 @@ TIME_UNITS = (
     ('second', _('seconds')),
     ('minute', _('minutes')),
     ('hour', _('hours')),
-    ('day', _('days')), 
+    ('day', _('days')),
 )
 
 STEP_FUNS = (
-    ('sum', _('sum')), 
-    ('avg', _('average')), 
+    ('sum', _('sum')),
+    ('avg', _('average')),
     ('min', _('minimum')),
-    ('max', _('maximum')), 
+    ('max', _('maximum')),
 )
 
-class QuantitativeDataSource(models.Model):
-    type  = models.CharField(max_length=255, verbose_name=_("type"), default='graphite', choices=SOURCE_TYPES)
-    name = models.CharField(max_length=255, verbose_name=_("name"))
-    data = YAMLField(verbose_name=_("data"), help_text=_('For graphite set: host, port, ssl, user, passwd'))
-#    data = models.TextField(verbose_name=_("data"), help_text=_('For graphite set: host, port, ssl, user, passwd'))
 
-    def __unicode__(self):
+@python_2_unicode_compatible
+class QuantitativeDataSource(models.Model):
+    type = models.CharField(max_length=255, verbose_name=_(
+        "type"), default='graphite', choices=SOURCE_TYPES)
+    name = models.CharField(max_length=255, verbose_name=_("name"))
+    data = YAMLField(verbose_name=_("data"), help_text=_(
+        'For graphite set: host, port, ssl, user, passwd'))
+
+    def __str__(self):
         return self.name
 
     class Meta:
         verbose_name = _("Quantitative data source")
         verbose_name_plural = _("Quantitative data sources")
 
+
+@python_2_unicode_compatible
 class QuantitativeData(models.Model):
-    data_source = models.ForeignKey(QuantitativeDataSource, verbose_name=_('data source'))
+    data_source = models.ForeignKey(
+        QuantitativeDataSource, verbose_name=_('data source'))
     metrics = models.TextField(verbose_name=_("metrics"))
 
-    def __unicode__(self):
-        return self.data_source.__unicode__()
+    def __str__(self):
+        return str(self.data_source)
 
     class Meta:
         verbose_name = _("Quantitative data")
         verbose_name_plural = _("Quantitative data")
+
+    @cached_property
+    def host(self):
+        return self.get_host()
 
     def get_host(self):
         if self.data_source.type == 'graphite':
@@ -66,13 +75,18 @@ class QuantitativeData(models.Model):
                 protocol = 'http'
             return '%s://%s:%s' % (protocol, self.data_source.data['host'], self.data_source.data['port'])
 
+
 class TemporalDataWidget(Widget):
 
-    data = models.ForeignKey(QuantitativeData, verbose_name=_('graph'), blank=True, null=True)
+    data = models.ForeignKey(QuantitativeData, verbose_name=_(
+        'graph'), blank=True, null=True)
     step_length = models.IntegerField(verbose_name=_('step length'), default=1)
-    step_unit = models.CharField(max_length=55, verbose_name=_('step unit'), choices=TIME_UNITS, default="minute")
-    step_fun = models.CharField(max_length=55, verbose_name=_('step function'), choices=STEP_FUNS, default="avg")
-    start = models.DateTimeField(verbose_name=_('start time'), blank=True, null=True)
+    step_unit = models.CharField(max_length=55, verbose_name=_(
+        'step unit'), choices=TIME_UNITS, default="minute")
+    step_fun = models.CharField(max_length=55, verbose_name=_(
+        'step function'), choices=STEP_FUNS, default="avg")
+    start = models.DateTimeField(verbose_name=_(
+        'start time'), blank=True, null=True)
 
     def get_graphite_data(self):
         url = "%s/render" % self.data.get_host()
@@ -81,8 +95,10 @@ class TemporalDataWidget(Widget):
         import json
 
         for metric in self.get_metrics():
-            target = 'summarize({}, "{}s", "{}")'.format(metric["target"], str(self.get_step_delta().total_seconds()).rstrip('0').rstrip('.'), self.step_fun)
-            start = str(floor(time() - self.get_duration_delta().total_seconds())).rstrip('0').rstrip('.')        
+            target = 'summarize({}, "{}s", "{}")'.format(metric["target"], str(
+                self.get_step_delta().total_seconds()).rstrip('0').rstrip('.'), self.step_fun)
+            start = str(floor(
+                time() - self.get_duration_delta().total_seconds())).rstrip('0').rstrip('.')
             params = {
                 "format": "json",
                 "from": start,
@@ -94,15 +110,18 @@ class TemporalDataWidget(Widget):
 
             data.append(json_dict[0]['datapoints'])
 
-        # WIP: data[0][0] je [value, timestamp] - zformatovat na [{x: value, y: normalni datum}...]
+        # WIP: data[0][0] je [value, timestamp] - zformatovat na [{x: value, y:
+        # normalni datum}...]
 
         return data
 
     def get_graphite_last_value(self):
         url = "%s/render" % self.data.get_host()
-        target = 'summarize(%s, "%s%s", "%s")' % (self.get_metrics()[0]["target"], self.step_length, self.step_unit, self.step_fun)
-        start = str(floor(time() - (self.get_step_delta().total_seconds()*1))).rstrip('.0')
-        
+        target = 'summarize(%s, "%s%s", "%s")' % (self.get_metrics()[0][
+            "target"], self.step_length, self.step_unit, self.step_fun)
+        start = str(
+            floor(time() - (self.get_step_delta().total_seconds() * 1))).rstrip('.0')
+
         params = {
             "format": "raw",
             "from": start,
@@ -114,19 +133,21 @@ class TemporalDataWidget(Widget):
                 "value": float(request.text.split("|")[-1].split(",")[-2]),
                 "unit": self.get_metrics()[0]["unit"]
             }
-        except: 
-            response = None    
+        except:
+            response = None
         return response
 
     def get_graphite_last_values(self):
 
         url = "%s/render" % self.data.get_host()
-        start = str(floor(time() - (self.get_step_delta().total_seconds()*2))).rstrip('.0')
+        start = str(
+            floor(time() - (self.get_step_delta().total_seconds() * 2))).rstrip('.0')
         response = []
         i = 1
 
         for metric in self.get_metrics():
-            target = 'summarize(%s, "%s%s", "%s")' % (metric["target"], self.step_length, self.step_unit, self.step_fun)
+            target = 'summarize(%s, "%s%s", "%s")' % (
+                metric["target"], self.step_length, self.step_unit, self.step_fun)
 
             params = {
                 "format": "raw",
@@ -143,7 +164,8 @@ class TemporalDataWidget(Widget):
                     value = float(request.text.split("|")[-1].split(",")[-2])
                 except:
                     try:
-                        value = float(request.text.split("|")[-1].split(",")[-3])
+                        value = float(request.text.split("|")
+                                      [-1].split(",")[-3])
                     except:
                         value = None
 
@@ -164,12 +186,14 @@ class TemporalDataWidget(Widget):
     def get_graphite_values(self):
 
         url = "%s/render" % self.data.get_host()
-        start = str(floor(time() - (self.get_duration_delta().total_seconds()))).rstrip('.0')
+        start = str(
+            floor(time() - (self.get_duration_delta().total_seconds()))).rstrip('.0')
         response = []
         i = 1
 
         for metric in self.get_metrics():
-            target = 'summarize(%s, "%s%s", "%s")' % (metric["target"], self.step_length, self.step_unit, self.step_fun)
+            target = 'summarize(%s, "%s%s", "%s")' % (
+                metric["target"], self.step_length, self.step_unit, self.step_fun)
 
             params = {
                 "format": "json",
@@ -215,16 +239,21 @@ class TemporalDataWidget(Widget):
     class Meta:
         abstract = True
 
+
 class TimeSeriesWidget(TemporalDataWidget):
     """
     Time-series widget mixin.
     """
-    duration_length = models.IntegerField(verbose_name=_('duration length'), default=2)
-    duration_unit = models.CharField(max_length=55, verbose_name=_('duration unit'), choices=TIME_UNITS, default="hour")
-    low_horizon = models.IntegerField(verbose_name=_('low horizon'), blank=True, null=True)
-    high_horizon = models.IntegerField(verbose_name=_('high horizon'), blank=True, null=True)
+    duration_length = models.IntegerField(
+        verbose_name=_('duration length'), default=2)
+    duration_unit = models.CharField(max_length=55, verbose_name=_(
+        'duration unit'), choices=TIME_UNITS, default="hour")
+    low_horizon = models.IntegerField(
+        verbose_name=_('low horizon'), blank=True, null=True)
+    high_horizon = models.IntegerField(
+        verbose_name=_('high horizon'), blank=True, null=True)
 
-    @property
+    @cached_property
     def source(self):
         return self.data.data_source
 
@@ -245,7 +274,7 @@ class TimeSeriesWidget(TemporalDataWidget):
             delta = datetime.timedelta(minutes=self.duration_length)
         if self.duration_unit == 'second':
             delta = datetime.timedelta(seconds=self.duration_length)
-        return delta 
+        return delta
 
     def get_step_delta(self):
         delta = None
@@ -273,14 +302,15 @@ class TimeSeriesWidget(TemporalDataWidget):
     class Meta:
         abstract = True
 
+
 class NumericWidget(TemporalDataWidget):
     """
     NumericValue widget mixin.
     """
 
-    @property
+    @cached_property
     def source(self):
         return self.data.data_source
-    
+
     class Meta:
         abstract = True

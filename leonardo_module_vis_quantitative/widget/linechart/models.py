@@ -1,4 +1,4 @@
-import datetime
+
 import time
 
 from django.db import models
@@ -7,18 +7,21 @@ from django.utils.translation import ugettext_lazy as _
 from leonardo_module_vis_quantitative.models import TimeSeriesWidget
 
 INTERPOLATION_CHOICES = (
-    ('linear', _('linear')), 
-    ('cardinal', _('cardinal')), 
+    ('linear', _('linear')),
+    ('cardinal', _('cardinal')),
     ('step', _('step')),
 )
+
 
 class LineChartWidget(TimeSeriesWidget):
     """
     Widget which shows area chart.
     """
 
-    interpolation = models.CharField(max_length=55, verbose_name=_("interpolation"), default='linear', choices=INTERPOLATION_CHOICES)
-    align_to_from = models.BooleanField(verbose_name=_('align to from'), default=False)
+    interpolation = models.CharField(max_length=55, verbose_name=_(
+        "interpolation"), default='linear', choices=INTERPOLATION_CHOICES)
+    align_to_from = models.BooleanField(
+        verbose_name=_('align to from'), default=False)
 
     def get_data(self):
         if self.data.data_source.type == "graphite":
