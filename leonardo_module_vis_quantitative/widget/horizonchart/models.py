@@ -29,6 +29,7 @@ class HorizonChartWidget(TimeSeriesWidget):
         if self.data:
           if self.data.data_source.type == "graphite":
               data['endpoint'] = self.data.host
+              data['step'] = str(self.get_step_delta().total_seconds() * 1000).rstrip("0").rstrip(".")
 
               for metric in self.get_metrics():
                 metric_data = {
@@ -36,7 +37,7 @@ class HorizonChartWidget(TimeSeriesWidget):
                     'name': metric['name']
                 }
                 data['metrics'].append(metric_data)
-
+        
         return data 
 
     class Meta:

@@ -2,91 +2,49 @@
 
 {% block content %}
 
-<div id="horizon_chart_{{ widget.fe_identifier }}">
-  {% for metric in widget.get_data.metrics %}
-    <div id="horizon_chart_{{ widget.fe_identifier }}_metric_{{ forloop.counter }}"></div>
-  {% endfor %}
-</div>
+<div id="horizon_chart_{{ widget.fe_identifier }}"></div>
 
 <script type="text/javascript">
 
-$(function() {
+$( document ).ready(function() {
 
-  var graphite_endpoint = "{{ widget.get_data.endpoint }}";
+var offset_left = $("#horizon_chart_{{ widget.fe_identifier }}").offset().left,
+    initial_height = ($("#{{ widget.fe_identifier }}").height() - 30) / {{ widget.get_data.metrics|length }},
+    horizon_height = initial_height > 30 ? initial_height : 30,
+    horizon_width = $("#{{ widget.fe_identifier }}").width();
 
-  function get_context() {
-    var context = cubism.context()
-                        .step(1 * 60 * 60 * 1000) // 1 hour
-                        .size(1024); // Number of data points
-                       // .stop();   // Fetching from a static data source; don't update values
-    return context;    
-  }
+var context = cubism.context()
+    .step({{ widget.get_data.step }})
+    .size(horizon_width),
+    horizon = context.horizon(),
+    graphite = context.graphite("{{ widget.get_data.endpoint }}");
 
+d3.select("#horizon_chart_{{ widget.fe_identifier }}").call(function(div) {
 
-  function get_graphite(graphite_endpoint) {
-    return get_context().graphite(graphite_endpoint);
-  }
+  div.append("div")
+      .attr("class", "axis")
+      .call(context.axis().orient("top"));
 
+  {% for metric in widget.get_data.metrics %}
+  div.append("div")
+      .attr("class", "horizon")
+      .data([ graphite.metric("{{ metric.target }}") ])
+      .call(horizon
+        .height(horizon_height)
+        .title("{{ metric.name }}"));
+  {% endfor %}
 
-  function init_cubism(graphite_endpoint){
-    /*
-      inicialization of horizon-cubism
-    */
-
-    var context = get_context();
-    var graphite = context.graphite = get_graphite(graphite_endpoint)
-    var horizon = context.horizon();
-
-    horizon = horizon.metric(graphite.metric);//.height(100)//.shift( - 0 * 24 * 60 * 60 * 1000 );
-
-    return horizon;    
-  }
-
-  function draw_axis(selector, name) {
-
-        d3.select(selector)                 // Select the div on which we want to act           
-        .selectAll(".axis")              // This is a standard D3 mechanism to bind data
-        .data(["top"])                   // to a graph. In this case we're binding the axes
-        .enter()                         // "top" and "bottom". Create two divs and give them
-        .append("div")                   // the classes top axis and bottom axis respectively. 
-        .attr("class", function(d) {      
-          return d + " axis";           
-        })                             
-        .each(function(d) {              // For each of these axes, draw the axes with 4 
-          d3.select(this)              // intervals and place them in their proper places.
-            .call(get_context().axis()       // 4 ticks gives us an hourly axis.
-            .ticks(4).orient(d));      
-        });
-
-        horizon.title(name);
-
-  }
-
-  function draw_graph(selector, metric, name) {
-
-        draw_axis(selector, name);
-
-        d3.select(selector)                 
-          .selectAll(".horizon")        
-          .data([metric])
-          .enter()                         
-          .insert("div", ".bottom")        // Insert the graph in a div. Turn the div into  
-          .attr("class", "horizon")        // a horizon graph and format to 2 decimals places.
-          .call(horizon);
-
-  }  
+  div.append("div")
+      .attr("class", "rule")
+      .call(context.rule());
 
 
-  try {
-        var horizon = init_cubism(graphite_endpoint);
+});
 
-        {% for metric in widget.get_data.metrics %}
-          draw_graph("#horizon_chart_{{ widget.fe_identifier }}_metric_{{ forloop.counter }}", "{{ metric.target }}", "{{ metric.name }}");
-        {% endfor %}
-  }
-  catch(err) {
-        console.error(err);
-  }
+context.on("focus", function(i) {
+  d3.selectAll(".value").style("left", i == null ? null : (i + offset_left -100) + "px");
+  d3.selectAll(".rule .line").style("left", i == null ? null : (i + offset_left) + "px");
+});
 
 });
 
