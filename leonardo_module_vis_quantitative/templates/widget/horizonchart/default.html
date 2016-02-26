@@ -39,13 +39,10 @@ $(function() {
 
     horizon = horizon.metric(graphite.metric);//.height(100)//.shift( - 0 * 24 * 60 * 60 * 1000 );
 
-    // hide metric name
-    horizon.title(function(d){return ""});
-
     return horizon;    
   }
 
-  function draw_axis(selector) {
+  function draw_axis(selector, name) {
 
         d3.select(selector)                 // Select the div on which we want to act           
         .selectAll(".axis")              // This is a standard D3 mechanism to bind data
@@ -60,11 +57,14 @@ $(function() {
             .call(get_context().axis()       // 4 ticks gives us an hourly axis.
             .ticks(4).orient(d));      
         });
+
+        horizon.title(name);
+
   }
 
-  function draw_graph(selector, metric) {
+  function draw_graph(selector, metric, name) {
 
-        draw_axis(selector);
+        draw_axis(selector, name);
 
         d3.select(selector)                 
           .selectAll(".horizon")        
@@ -73,6 +73,7 @@ $(function() {
           .insert("div", ".bottom")        // Insert the graph in a div. Turn the div into  
           .attr("class", "horizon")        // a horizon graph and format to 2 decimals places.
           .call(horizon);
+
   }  
 
 
@@ -80,7 +81,7 @@ $(function() {
         var horizon = init_cubism(graphite_endpoint);
 
         {% for metric in widget.get_data.metrics %}
-          draw_graph("#horizon_chart_{{ widget.fe_identifier }}_metric_{{ forloop.counter }}", "{{ metric }}");
+          draw_graph("#horizon_chart_{{ widget.fe_identifier }}_metric_{{ forloop.counter }}", "{{ metric.target }}", "{{ metric.name }}");
         {% endfor %}
   }
   catch(err) {

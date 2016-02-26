@@ -31,7 +31,11 @@ class HorizonChartWidget(TimeSeriesWidget):
               data['endpoint'] = self.data.host
 
               for metric in self.get_metrics():
-                data['metrics'].append(metric['target'])
+                metric_data = {
+                    'target': metric['target'],
+                    'name': metric['name']
+                }
+                data['metrics'].append(metric_data)
 
         return data 
 
