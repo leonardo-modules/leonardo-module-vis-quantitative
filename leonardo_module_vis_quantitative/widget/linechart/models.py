@@ -16,35 +16,19 @@ INTERPOLATION_CHOICES = (
 
 class LineChartWidget(TimeSeriesWidget):
     """
-    Widget which shows area chart.
+    Widget which shows line chart.
     """
 
     interpolation = models.CharField(max_length=55, verbose_name=_(
         "interpolation"), default='linear', choices=INTERPOLATION_CHOICES)
-    align_to_from = models.BooleanField(
-        verbose_name=_('align to from'), default=False)
 
     def get_data(self):
-        if self.data.data_source.type == "graphite":
-            return json.dumps(self.get_graphite_data())
-        else:
-            return None
-
-    def get_data_from_graphite(self):
-
-        end = self.relative_start() + self.get_duration_delta()
-
-        data = {
-            'metrics': self.get_metrics(),
-            'step_seconds': self.get_step_delta().total_seconds(),
-            'step_fun': self.step_fun,
-            'low_horizon': self.low_horizon,
-            'high_horizon': self.high_horizon,
-            'start': str(long(time.mktime(self.relative_start().timetuple()))),
-            'end': str(long(time.mktime(end.timetuple()))),
-            'host': self.data.get_host()
-        }
-        return data
+        if self.data:
+            if self.data.data_source.type == "graphite":
+                return json.dumps(self.get_graphite_data())
+            else:
+                return None
+        else: return None
 
     class Meta:
         abstract = True
