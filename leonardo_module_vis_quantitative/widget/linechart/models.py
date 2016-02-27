@@ -8,9 +8,9 @@ from django.utils.translation import ugettext_lazy as _
 from leonardo_module_vis_quantitative.models import TimeSeriesWidget
 
 INTERPOLATION_CHOICES = (
-    ('cardinal', _('cardinal')),
-    ('linear', _('linear')),
-    ('step', _('step')),
+    ('cardinal', _('Cardinal')),
+    ('linear', _('Linear')),
+    ('step', _('Step')),
 )
 
 
@@ -20,9 +20,9 @@ class LineChartWidget(TimeSeriesWidget):
     """
 
     interpolation = models.CharField(max_length=55, verbose_name=_(
-        "interpolation"), default='linear', choices=INTERPOLATION_CHOICES)
+        "Interpolation"), default='linear', choices=INTERPOLATION_CHOICES)
     align_to_from = models.BooleanField(
-        verbose_name=_('align to from'), default=False)
+        verbose_name=_('Align to from'), default=False)
 
     def get_data(self):
         if self.data.data_source.type == "graphite":
@@ -48,5 +48,5 @@ class LineChartWidget(TimeSeriesWidget):
 
     class Meta:
         abstract = True
-        verbose_name = _("Line Chart")
-        verbose_name_plural = _("Line Charts")
+        verbose_name = _("Line chart")
+        verbose_name_plural = _("Line charts")
