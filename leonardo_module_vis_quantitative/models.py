@@ -3,6 +3,7 @@
 import datetime
 from math import floor
 from time import time
+import json
 
 import requests
 from django.db import models
@@ -92,7 +93,6 @@ class TemporalDataWidget(Widget):
         url = "%s/render" % self.data.get_host()
         duration_delta = self.get_duration_delta().total_seconds()
         data = []
-        import json
 
         for metric in self.get_metrics():
             target = 'summarize({}, "{}s", "{}")'.format(metric["target"], str(
@@ -118,10 +118,7 @@ class TemporalDataWidget(Widget):
                 'values': values
             }
             data.append(datum)
-#            data.append(json_dict[0]['datapoints'])
 
-        # WIP: data[0][0] je [value, timestamp] - zformatovat na [{x: value, y:
-        # normalni datum}...]
 
         return data
 

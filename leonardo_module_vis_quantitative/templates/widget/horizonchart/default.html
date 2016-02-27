@@ -1,0 +1,54 @@
+{% extends widget.get_base_template %}
+
+{% block content %}
+
+<div id="horizon_chart_{{ widget.fe_identifier }}"></div>
+
+<script type="text/javascript">
+
+$( document ).ready(function() {
+
+var offset_left = $("#horizon_chart_{{ widget.fe_identifier }}").offset().left,
+    initial_height = ($("#{{ widget.fe_identifier }}").height() - 30) / {{ widget.get_data.metrics|length }},
+    horizon_height = initial_height > 30 ? initial_height : 30,
+    horizon_width = $("#{{ widget.fe_identifier }}").width();
+
+var context = cubism.context()
+    .step({{ widget.get_data.step }})
+    .size(horizon_width),
+    horizon = context.horizon(),
+    graphite = context.graphite("{{ widget.get_data.endpoint }}");
+
+d3.select("#horizon_chart_{{ widget.fe_identifier }}").call(function(div) {
+
+  div.append("div")
+      .attr("class", "axis")
+      .call(context.axis().orient("top"));
+
+  {% for metric in widget.get_data.metrics %}
+  div.append("div")
+      .attr("class", "horizon")
+      .data([ graphite.metric("{{ metric.target }}") ])
+      .call(horizon
+        .height(horizon_height)
+        .title("{{ metric.name }}"));
+  {% endfor %}
+
+  div.append("div")
+      .attr("class", "rule")
+      .call(context.rule());
+
+
+});
+
+context.on("focus", function(i) {
+  d3.selectAll(".value").style("left", i == null ? null : (i + offset_left -100) + "px");
+  d3.selectAll(".rule .line").style("left", i == null ? null : (i + offset_left) + "px");
+});
+
+});
+
+</script>
+
+{% endblock %}
+

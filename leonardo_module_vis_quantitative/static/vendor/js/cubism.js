@@ -1292,7 +1292,7 @@ cubism_contextPrototype.rule = function() {
     context.on("focus.rule-" + id, function(i) {
       line.datum(i)
           .style("display", i == null ? "none" : null)
-          .style("left", i == null ? null : cubism_ruleLeft);
+       // .style("left", i == null ? null : cubism_ruleLeft); Tux: autmatic positioning of rule removed
     });
   }
 
@@ -1318,7 +1318,7 @@ cubism_contextPrototype.rule = function() {
 
 function cubism_ruleStyle(line) {
   line
-      .style("position", "absolute")
+      .style("position", "fixed") // Tux: defaults to absolute 
       .style("top", 0)
       .style("bottom", 0)
       .style("width", "1px")

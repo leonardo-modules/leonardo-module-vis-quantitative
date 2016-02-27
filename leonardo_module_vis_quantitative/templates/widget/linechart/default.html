@@ -25,12 +25,9 @@ $(document).ready(function() {
                   .useInteractiveGuideline(true);
   
     chart.xAxis    
-        .axisLabel('Time (ms)')
-//        .tickFormat(d3.format(',r'));
-        .tickFormat(function(d){return d3.time.format('%d-%b')(new Date(d*1000));});
+        .tickFormat(function(d){return d3.time.format('%x')(new Date(d*1000));});
   
     chart.yAxis   
-        .axisLabel('Voltage (v)')
         .tickFormat(d3.format('.04f'));
     {% autoescape off %} 
     var myData = {{ widget.get_data }};

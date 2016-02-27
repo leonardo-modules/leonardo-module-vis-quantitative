@@ -13,11 +13,13 @@ LEONARDO_JS_FILES = [
     'vis/js/angular_gauge_pointer.js',
     'vis/js/concentric_gauge_area.js',
     'vendor/js/nvd3.js',
+    'vendor/js/cubism.js'
 ]
 
 LEONARDO_SCSS_FILES = [
     'vis/scss/angular_gauge.scss',
     'vendor/css/nvd3.css',
+    'vendor/css/cubism.css'
 ]
 
 LEONARDO_APPS = [
@@ -29,6 +31,7 @@ LEONARDO_WIDGETS = [
     'leonardo_module_vis_quantitative.widget.horizonchart.models.HorizonChartWidget',
     'leonardo_module_vis_quantitative.widget.linechart.models.LineChartWidget',
     'leonardo_module_vis_quantitative.widget.donutchart.models.DonutChartWidget',
+    'leonardo_module_vis_quantitative.widget.horizonchart.models.HorizonChartWidget',
 ]
 
 class Config(AppConfig):
