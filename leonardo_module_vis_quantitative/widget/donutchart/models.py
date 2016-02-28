@@ -9,10 +9,7 @@ class DonutChartWidget(NumericWidget):
     Widget which shows donut chart.
     """
 
-    def widget_data(self, request):
-        return self.get_graphite_last_value()
-
     class Meta:
         abstract = True
-        verbose_name = _("Donut Chart")
-        verbose_name_plural = _("Donut Charts")
+        verbose_name = _("Donut chart")
+        verbose_name_plural = _("Donut charts")

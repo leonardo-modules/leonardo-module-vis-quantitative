@@ -15,25 +15,25 @@ function set_areachart_{{ widget.id }}_height() {
 $(document).ready(function() {
 
   nv.addGraph(function() {
-    var chart = nv.models.areachart()
-                  .margin({left: 100}) 
+    var chart = nv.models.stackedAreaChart()
                   .showLegend(true)      
                   .showYAxis(true)       
                   .showXAxis(true)
                   .interpolate("{{ widget.interpolation }}")
-                  .forceY([0, 0.01])
-                  .useInteractiveGuideline(true);
+                  .showControls(false)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
+                  .clipEdge(true);
   
     chart.xAxis    
-        .axisLabel('Time (ms)')
 //        .tickFormat(d3.format(',r'));
         .tickFormat(function(d){return d3.time.format('%d-%b')(new Date(d*1000));});
   
     chart.yAxis   
-        .axisLabel('Voltage (v)')
         .tickFormat(d3.format('.04f'));
+
+    chart.style('{{ widget.display }}');
+
     {% autoescape off %} 
-    var myData = {{ widget.get_data }};
+    var myData = {{ widget.get_graph_data }};
     {% endautoescape %}
    //sinAndCos(); 
   

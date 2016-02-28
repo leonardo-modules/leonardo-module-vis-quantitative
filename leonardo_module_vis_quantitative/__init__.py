@@ -29,9 +29,10 @@ LEONARDO_APPS = [
 LEONARDO_WIDGETS = [
     'leonardo_module_vis_quantitative.widget.angulargauge.models.AngularGaugeWidget',
     'leonardo_module_vis_quantitative.widget.horizonchart.models.HorizonChartWidget',
+    'leonardo_module_vis_quantitative.widget.areachart.models.AreaChartWidget',
+    'leonardo_module_vis_quantitative.widget.barchart.models.BarChartWidget',
     'leonardo_module_vis_quantitative.widget.linechart.models.LineChartWidget',
     'leonardo_module_vis_quantitative.widget.donutchart.models.DonutChartWidget',
-    'leonardo_module_vis_quantitative.widget.horizonchart.models.HorizonChartWidget',
 ]
 
 class Config(AppConfig):

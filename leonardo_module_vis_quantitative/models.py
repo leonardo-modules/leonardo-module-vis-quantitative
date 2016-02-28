@@ -88,6 +88,38 @@ class TemporalDataWidget(Widget):
         'step function'), choices=STEP_FUNS, default="avg")
     start = models.DateTimeField(verbose_name=_(
         'start time'), blank=True, null=True)
+    align_to_from = models.BooleanField(
+        verbose_name=_('Align to from'), default=False)
+
+    def relative_start(self):
+        if self.start:
+            return self.start
+        else:
+            now = datetime.datetime.now()
+            return now - self.get_duration_delta()
+
+    def get_step_delta(self):
+        delta = None
+        if self.step_unit == 'day':
+            delta = datetime.timedelta(days=self.step_length)
+        if self.step_unit == 'hour':
+            delta = datetime.timedelta(hours=self.step_length)
+        if self.step_unit == 'minute':
+            delta = datetime.timedelta(minutes=self.step_length)
+        if self.step_unit == 'second':
+            delta = datetime.timedelta(seconds=self.step_length)
+        return delta
+
+    def get_step_label(self):
+        if self.step_unit == 'day':
+            return 'd'
+        if self.step_unit == 'hour':
+            return 'h'
+        if self.step_unit == 'minute':
+            return 'm'
+        if self.step_unit == 'second':
+            return 's'
+        return '?'
 
     def get_graphite_data(self):
         url = "%s/render" % self.data.get_host()
@@ -119,91 +151,18 @@ class TemporalDataWidget(Widget):
             }
             data.append(datum)
 
-
         return data
 
-
-
-    def get_graphite_last_value(self):
+    def get_graphite_datum(self):
         url = "%s/render" % self.data.get_host()
-        target = 'summarize(%s, "%s%s", "%s")' % (self.get_metrics()[0][
-            "target"], self.step_length, self.step_unit, self.step_fun)
-        start = str(
-            floor(time() - (self.get_step_delta().total_seconds() * 1))).rstrip('.0')
-
-        params = {
-            "format": "raw",
-            "from": start,
-            "target": target,
-        }
-        request = requests.get(url, params=params)
-        try:
-            response = {
-                "value": float(request.text.split("|")[-1].split(",")[-2]),
-                "unit": self.get_metrics()[0]["unit"]
-            }
-        except:
-            response = None
-        return response
-
-    def get_graphite_last_values(self):
-
-        url = "%s/render" % self.data.get_host()
-        start = str(
-            floor(time() - (self.get_step_delta().total_seconds() * 2))).rstrip('.0')
-        response = []
-        i = 1
+        duration_delta = self.get_step_delta().total_seconds()
+        data = []
 
         for metric in self.get_metrics():
-            target = 'summarize(%s, "%s%s", "%s")' % (
-                metric["target"], self.step_length, self.step_unit, self.step_fun)
-
-            params = {
-                "format": "raw",
-                "from": start,
-                "target": target,
-            }
-
-            request = requests.get(url, params=params)
-
-            try:
-                value = float(request.text.split("|")[-1].split(",")[-1])
-            except:
-                try:
-                    value = float(request.text.split("|")[-1].split(",")[-2])
-                except:
-                    try:
-                        value = float(request.text.split("|")
-                                      [-1].split(",")[-3])
-                    except:
-                        value = None
-
-            response.append({
-                "value": value,
-                "unit": metric["unit"],
-                "name": metric["name"],
-                "type": metric.get("type", None),
-                "x": metric.get("x", None),
-                "y": metric.get("y", None),
-                "device": i
-            })
-
-            i += 1
-
-        return response
-
-    def get_graphite_values(self):
-
-        url = "%s/render" % self.data.get_host()
-        start = str(
-            floor(time() - (self.get_duration_delta().total_seconds()))).rstrip('.0')
-        response = []
-        i = 1
-
-        for metric in self.get_metrics():
-            target = 'summarize(%s, "%s%s", "%s")' % (
-                metric["target"], self.step_length, self.step_unit, self.step_fun)
-
+            target = 'summarize({}, "{}s", "{}")'.format(metric["target"], str(
+                self.get_step_delta().total_seconds()).rstrip('0').rstrip('.'), self.step_fun)
+            start = str(floor(
+                time() - self.get_step_delta().total_seconds())).rstrip('0').rstrip('.')
             params = {
                 "format": "json",
                 "from": start,
@@ -211,21 +170,18 @@ class TemporalDataWidget(Widget):
             }
 
             request = requests.get(url, params=params)
+            json_dict = json.loads(request.text)
+            value = 5
+            for item in json_dict[0]['datapoints']:
+                if item[0] != None:
+                    value = item[0]
+            datum = {
+                'key': metric['name'],
+                'value': value
+            }
+            data.append(datum)
 
-            #values = request.text.split("|")[-1].split(",")
-
-            response.append({
-                "values": request.json()[0]['datapoints'],
-                "unit": metric["unit"],
-                "name": metric["name"],
-                "type": metric.get("type", None),
-                "x": metric.get("x", None),
-                "y": metric.get("y", None)
-            })
-
-            i += 1
-
-        return response
+        return data
 
     def get_metrics(self):
         metrics = self.data.metrics.split("\n")
@@ -266,12 +222,6 @@ class TimeSeriesWidget(TemporalDataWidget):
     def source(self):
         return self.data.data_source
 
-    def relative_start(self):
-        if self.start:
-            return self.start
-        else:
-            now = datetime.datetime.now()
-            return now - self.get_duration_delta()
 
     def get_duration_delta(self):
         delta = None
@@ -285,28 +235,14 @@ class TimeSeriesWidget(TemporalDataWidget):
             delta = datetime.timedelta(seconds=self.duration_length)
         return delta
 
-    def get_step_delta(self):
-        delta = None
-        if self.step_unit == 'day':
-            delta = datetime.timedelta(days=self.step_length)
-        if self.step_unit == 'hour':
-            delta = datetime.timedelta(hours=self.step_length)
-        if self.step_unit == 'minute':
-            delta = datetime.timedelta(minutes=self.step_length)
-        if self.step_unit == 'second':
-            delta = datetime.timedelta(seconds=self.step_length)
-        return delta
-
-    def get_step_label(self):
-        if self.step_unit == 'day':
-            return 'd'
-        if self.step_unit == 'hour':
-            return 'h'
-        if self.step_unit == 'minute':
-            return 'm'
-        if self.step_unit == 'second':
-            return 's'
-        return '?'
+    def get_graph_data(self):
+        if self.data != None:
+            if self.data.data_source.type == "graphite":
+                return json.dumps(self.get_graphite_data())
+            else:
+                return None
+        else:
+            return None
 
     class Meta:
         abstract = True
@@ -316,6 +252,12 @@ class NumericWidget(TemporalDataWidget):
     """
     NumericValue widget mixin.
     """
+
+    def get_graph_data(self):
+        if self.data.data_source.type == "graphite":
+            return json.dumps(self.get_graphite_datum())
+        else:
+            return None
 
     @cached_property
     def source(self):

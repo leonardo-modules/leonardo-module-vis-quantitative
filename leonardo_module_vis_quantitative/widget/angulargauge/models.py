@@ -9,17 +9,14 @@ class AngularGaugeWidget(NumericWidget):
     """
     Widget which shows angular gauge.
     """
-    major_ticks = models.IntegerField(verbose_name=_('major ticks'), default=5)
-    minor_ticks = models.IntegerField(verbose_name=_('minor ticks'), default=2)
+    major_ticks = models.IntegerField(verbose_name=_('Major ticks'), default=5)
+    minor_ticks = models.IntegerField(verbose_name=_('Minor ticks'), default=2)
     warning_threshold = models.IntegerField(
-        verbose_name=_('warning threshold'), default=70)
+        verbose_name=_('Warning threshold'), default=70)
     critical_threshold = models.IntegerField(
-        verbose_name=_('critical threshold'), default=90)
-
-    def widget_data(self, request):
-        return self.get_graphite_last_value()
+        verbose_name=_('Critical threshold'), default=90)
 
     class Meta:
         abstract = True
-        verbose_name = _("Angular Gauge")
-        verbose_name_plural = _("Angular Gauges")
+        verbose_name = _("Angular gauge")
+        verbose_name_plural = _("Angular gauges")

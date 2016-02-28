@@ -15,32 +15,25 @@ function set_barchart_{{ widget.id }}_height() {
 $(document).ready(function() {
 
   nv.addGraph(function() {
-    var chart = nv.models.barchart()
-                  .margin({left: 100}) 
-                  .showLegend(true)      
-                  .showYAxis(true)       
-                  .showXAxis(true)
-                  .forceY([0, 0.01])
-                  .useInteractiveGuideline(true);
+    var chart = nv.models.multiBarChart()
+      .reduceXTicks(true)
+      .rotateLabels(0)
+      .showControls(false)
+{% if widget.display == 'stack' %}
+      .stacked(true)
+{% endif %}
+      .groupSpacing(0.1)
   
     chart.xAxis    
-        .axisLabel('Time (ms)')
-//        .tickFormat(d3.format(',r'));
-        .tickFormat(function(d){return d3.time.format('%d-%b')(new Date(d*1000));});
+      .tickFormat(function(d){return d3.time.format('%d-%b')(new Date(d*1000));});
   
     chart.yAxis   
-        .axisLabel('Voltage (v)')
-        .tickFormat(d3.format('.04f'));
-    {% autoescape off %} 
-    var myData = {{ widget.get_data }};
-    {% endautoescape %}
-   //sinAndCos(); 
-  
+      .tickFormat(d3.format('.04f'));
+
     d3.select('#barchart_{{ widget.fe_identifier }} svg')
-        .datum(myData)    
-        .call(chart);     
- 
-    //Update the chart when window resizes.
+      .datum({% autoescape off %}{{ widget.get_graph_data }}{% endautoescape %})
+      .call(chart);
+
     nv.utils.windowResize(function() { chart.update() });
     return chart;
   });
