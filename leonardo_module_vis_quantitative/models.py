@@ -171,10 +171,18 @@ class TemporalDataWidget(Widget):
 
             request = requests.get(url, params=params)
             json_dict = json.loads(request.text)
-            value = 5
-            for item in json_dict[0]['datapoints']:
-                if item[0] != None:
-                    value = item[0]
+            value = 0
+
+            if None in json_dict[0]['datapoints'][0]:
+                start = str(floor(time() - datetime.timedelta(minutes=5).total_seconds())).rstrip('0').rstrip('.')
+                params['from'] = start
+                wide_request = requests.get(url, params=params)
+                values_dict = json.loads(wide_request.text)
+                not_none = [ v for v in values_dict[0]['datapoints'] if None not in v ]
+                value = not_none[-1][0]
+            else:
+                value = json_dict[0]['datapoints'][-1][0]
+
             datum = {
                 'label': metric['name'],
                 'value': value
