@@ -28,7 +28,7 @@ $(document).ready(function() {
       .tickFormat(function(d){return d3.time.format('%d-%b')(new Date(d*1000));});
   
     chart.yAxis   
-      .tickFormat(d3.format('.04f'));
+      .tickFormat(d3.format('.0'));
 
     d3.select('#barchart_{{ widget.fe_identifier }} svg')
       .datum({% autoescape off %}{{ widget.get_graph_data }}{% endautoescape %})
