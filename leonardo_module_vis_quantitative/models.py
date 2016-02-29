@@ -176,7 +176,7 @@ class TemporalDataWidget(Widget):
                 if item[0] != None:
                     value = item[0]
             datum = {
-                'key': metric['name'],
+                'label': metric['name'],
                 'value': value
             }
             data.append(datum)
