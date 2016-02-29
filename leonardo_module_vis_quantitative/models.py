@@ -179,7 +179,8 @@ class TemporalDataWidget(Widget):
                 wide_request = requests.get(url, params=params)
                 values_dict = json.loads(wide_request.text)
                 not_none = [ v for v in values_dict[0]['datapoints'] if None not in v ]
-                value = not_none[-1][0]
+                if len(not_none) > 0:
+                    value = not_none[-1][0]
             else:
                 value = json_dict[0]['datapoints'][-1][0]
 
