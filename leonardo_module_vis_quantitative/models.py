@@ -172,24 +172,31 @@ class TemporalDataWidget(Widget):
 
             request = requests.get(url, params=params)
             json_dict = json.loads(request.text)
-            value = 0
-
-            if None in json_dict[0]['datapoints'][0]:
-                start = str(floor(time() - datetime.timedelta(minutes=5).total_seconds())).rstrip('0').rstrip('.')
-                params['from'] = start
-                wide_request = requests.get(url, params=params)
-                values_dict = json.loads(wide_request.text)
-                not_none = [ v for v in values_dict[0]['datapoints'] if None not in v ]
-                if len(not_none) > 0:
-                    value = not_none[-1][0]
-            else:
-                value = json_dict[0]['datapoints'][-1][0]
-
-            datum = {
-                'label': metric['name'],
-                'value': value
-            }
-            data.append(datum)
+            item_dict = {}
+            for i, item in enumerate(json_dict):
+                if None in item['datapoints'][-1]:
+                    if not item_dict:
+                        start = str(floor(time() - datetime.timedelta(minutes=5).total_seconds())).rstrip('0').rstrip('.')
+                        params['from'] = start
+                        wide_request = requests.get(url, params=params)
+                        values_dict = json.loads(wide_request.text)
+                        item_dict = values_dict
+                    not_none = [ x for x in item_dict[i]['datapoints'] if None not in x ]
+                    value = 0
+                    if len(not_none) > 0:
+                        value = not_none[-1][0]
+                    datum = {
+                        'label': metric['name'],
+                        'value': value
+                    }
+                    data.append(datum)
+                else:
+                    value = item['datapoints'][-1][0]
+                    datum = {
+                        'label': metric['name'],
+                        'value': value
+                    }
+                    data.append(datum)
 
         return data
 
