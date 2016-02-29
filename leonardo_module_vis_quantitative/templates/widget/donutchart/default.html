@@ -4,6 +4,11 @@
 <div class="donutchart" id="donutchart_{{ widget.fe_identifier }}"><svg></svg></div>
 <script type="text/javascript">
 $(document).ready(function() {
+
+  var chart_width = $("#{{ widget.fe_identifier }}").width();
+
+  $("#donutchart_{{ widget.fe_identifier }} svg").height(chart_width);
+
   nv.addGraph(function() {
     var chart = nv.models.pieChart()
       .x(function(d) { return d.label })
@@ -11,6 +16,7 @@ $(document).ready(function() {
       .labelType("value") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
       .donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
       .donutRatio(0.35)  
+      .height(chart_width)
       .showLabels(true);
 
     d3.select("#donutchart_{{ widget.fe_identifier }} svg")
