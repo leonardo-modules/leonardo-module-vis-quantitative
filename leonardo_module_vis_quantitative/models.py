@@ -58,7 +58,8 @@ class QuantitativeData(models.Model):
     metrics = models.TextField(verbose_name=_("metrics"))
 
     def __str__(self):
-        return str(self.data_source)
+        metrics = (self.metrics[:80] + '..') if len(self.metrics) > 80 else self.metrics
+        return "%s: %s" % (self.data_source.name, metrics)
 
     class Meta:
         verbose_name = _("Quantitative data")
