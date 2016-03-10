@@ -174,7 +174,10 @@ class TemporalDataWidget(Widget):
             json_dict = json.loads(request.text)
             item_dict = {}
             for i, item in enumerate(json_dict):
-                if None in item['datapoints'][-1]:
+                json_not_none = [ x for x in item['datapoints'] if None not in x ]
+                if len(json_not_none) == 0:
+                # I expect this to be caused by very short step, try with longer step
+                # TODO: actually get the step and set second try step larger
                     if not item_dict:
                         start = str(floor(time() - datetime.timedelta(minutes=5).total_seconds())).rstrip('0').rstrip('.')
                         params['from'] = start
@@ -191,7 +194,7 @@ class TemporalDataWidget(Widget):
                     }
                     data.append(datum)
                 else:
-                    value = item['datapoints'][-1][0]
+                    value = json_not_none[-1][0]
                     datum = {
                         'label': metric['name'],
                         'value': value
