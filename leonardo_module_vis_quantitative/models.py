@@ -221,6 +221,8 @@ class TemporalDataWidget(Widget):
                 ret.append(final_line)
         return ret
 
+    auto_reload = True
+
     class Meta:
         abstract = True
 
