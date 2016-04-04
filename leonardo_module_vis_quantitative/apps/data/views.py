@@ -5,14 +5,12 @@ from django.conf import settings
 from django.http import HttpResponseForbidden, JsonResponse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
-from feincms.module.mixins import StandaloneView
 from feincms.views.decorators import standalone
 from leonardo.module.web.widgets.utils import get_widget_from_id
 
 
-class WidgetDataView(StandaloneView):
+class WidgetDataView(View):
 
     '''This view call specific method on widget end returns JSON
 
@@ -22,10 +20,6 @@ class WidgetDataView(StandaloneView):
 
     Do not serialize data in widget methods
     '''
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super(WidgetDataView, self).dispatch(request, *args, **kwargs)
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
