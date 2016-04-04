@@ -26,7 +26,7 @@ class WidgetDataView(View):
 
     @cached_property
     def attrs(self):
-        return json.loads(self.request.body)
+        return self.request.POST
 
     @method_decorator(standalone)
     def post(self, *args, **kwargs):

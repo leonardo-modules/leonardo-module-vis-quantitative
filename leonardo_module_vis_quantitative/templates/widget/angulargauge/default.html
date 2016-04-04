@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 
-function redraw_angular_gauge_{{ widget.id }}(){
+function redraw_angular_gauge_{{ widget.id }}(value){
   var placeholder = '#angular_gauge_{{ widget.fe_identifier }}',
       parent_box = $(placeholder).parent(),
       width = parent_box.width(),
@@ -21,7 +21,7 @@ function redraw_angular_gauge_{{ widget.id }}(){
     'min': undefined != min ? min : 0,
     'max': undefined != max ? max : 100,
     'minorTicks': 5,
-    'data': Math.round(Math.random() * 100) / 100 * 100,
+    'data': value,
     'data_source': "{{ widget.get_data }}"
   };
 
@@ -30,20 +30,42 @@ function redraw_angular_gauge_{{ widget.id }}(){
   config.yellowZones = [{ from: config.min + range*0.75, to: config.min + range*0.9 }];
   config.redZones = [{ from: config.min + range*0.9, to: config.max }];
   
-  gauge = new angular_gauge_pointer(config);
+  var gauge = new angular_gauge_pointer(config);
+
   gauge.render();
 
   function loop_angular_gauge(){
-    gauge.redraw(Math.random()*100);
+    $.ajax({
+        type: 'POST',
+        url: '/data/data/',
+        data: {widget_id:$("#angular_gauge_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
+        success: function (data) {
+            console.log(data);
+        },
+        async: false
+    }).done(function(data) {
+      gauge.redraw(data.data.value);
+    });
+
     setTimeout(function() {
-    	loop_angular_gauge();
+      loop_angular_gauge();
     }, 5000);
   }
   loop_angular_gauge();
 }
 
 $(document).ready(function() {
-  redraw_angular_gauge_{{ widget.id }}();
+  $.ajax({
+      type: 'POST',
+      url: '/data/data/',
+      data: {widget_id:$("#angular_gauge_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
+      success: function (data) {
+          console.log(data);
+      },
+      async: false
+  }).done(function(data) {
+    redraw_angular_gauge_{{ widget.id }}(data.data.value);
+  });
   window.addEventListener("resize", redraw_angular_gauge_{{ widget.id }});
 });
 
