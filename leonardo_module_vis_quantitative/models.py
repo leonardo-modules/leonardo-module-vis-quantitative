@@ -12,6 +12,8 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from leonardo.module.web.models import Widget
 from yamlfield.fields import YAMLField
+from random import randint
+
 
 SOURCE_TYPES = (
     ('dummy', _('Test data')),
@@ -221,6 +223,25 @@ class TemporalDataWidget(Widget):
                 ret.append(final_line)
         return ret
 
+    def get_data(self, request, **kwargs):
+        '''Returns all widget data in array or dictionary
+        method must accepts ``kwargs`` where the request is
+        and other kwargs which are used for advance cases
+        '''
+        return [randint(0, 100) for i in range(0, 100)]
+
+    def get_update_data(self, request, **kwargs):
+        '''Returns part of widget data in array or dictionary
+        method must accepts ``kwargs`` where the request is
+        and other kwargs which are used for advance cases
+        such as filtering etc.
+
+        You can make your custom method which will be available
+        for calling from fronted side and this is just an example
+        how to achieve that
+        '''
+        return [randint(0, 100) for i in range(0, 10)]
+
     auto_reload = True
 
     class Meta:
@@ -243,7 +264,6 @@ class TimeSeriesWidget(TemporalDataWidget):
     @cached_property
     def source(self):
         return self.data.data_source
-
 
     def get_duration_delta(self):
         delta = None

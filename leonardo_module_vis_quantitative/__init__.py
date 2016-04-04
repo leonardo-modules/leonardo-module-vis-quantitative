@@ -36,6 +36,12 @@ LEONARDO_WIDGETS = [
     'leonardo_module_vis_quantitative.widget.linechart.models.LineChartWidget',
 ]
 
+
+LEONARDO_PLUGINS = [
+    ('leonardo_module_vis_quantitative.apps.data', 'Vislab: Data View'),
+]
+
+
 class Config(AppConfig):
 
     name = 'leonardo_module_vis_quantitative'
