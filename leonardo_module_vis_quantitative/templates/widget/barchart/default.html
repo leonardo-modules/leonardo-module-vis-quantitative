@@ -9,7 +9,8 @@
       leonardo.charts.barchart.createBarchart({
         chartSelector:"#barchart_{{ widget.fe_identifier }} svg",
         containerSelector:"#{{ widget.fe_identifier }}",
-        url: "/data/data",
+        url: "/data/data/",
+        requestData:{widget_id:$("#barchart{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
         updateInterval:5000});
     }});
   }); 
