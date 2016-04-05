@@ -124,7 +124,7 @@ class TemporalDataWidget(Widget):
             return 's'
         return '?'
 
-    def get_graphite_data(self):
+    def get_graphite_data(self, **kwargs):
         url = "%s/render" % self.data.get_host()
         duration_delta = self.get_duration_delta().total_seconds()
         data = []
@@ -156,7 +156,7 @@ class TemporalDataWidget(Widget):
 
         return data
 
-    def get_graphite_datum(self):
+    def get_graphite_datum(self, **kwargs):
         url = "%s/render" % self.data.get_host()
         duration_delta = self.get_step_delta().total_seconds()
         data = []
@@ -228,7 +228,7 @@ class TemporalDataWidget(Widget):
         method must accepts ``kwargs`` where the request is
         and other kwargs which are used for advance cases
         '''
-        return self.get_graphite_data()
+        return self.get_graph_data()
 
     def get_update_data(self, request, **kwargs):
         '''Returns part of widget data in array or dictionary
