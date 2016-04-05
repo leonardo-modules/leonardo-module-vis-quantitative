@@ -1,12 +1,13 @@
 /*
  *  Leonardo charts nvd3.js barchart module 
  */
-var leonardo = function(leo) {
-    leo.charts = leo.charts || {};
+var leonardo = function(leonardo) {
+    leonardo.charts = leonardo.charts || {};
 
-    leo.charts.barchart = new function() {
+    leonardo.charts.barchart = new function() {
         var _chart = this;
-        _chart.config = {
+        _chart.instances = {};
+        _chart.initialConfig = {
             chartSelector: "",
             containerSelector: "",
             url:"",
@@ -15,31 +16,31 @@ var leonardo = function(leo) {
             stacked: true,
             sliceData:true,
         };
-        this.getData = function() {
+        this.getData = function(chartSelector) {
             return $.ajax({
                 type: 'POST',
-                data: _chart.config.requestData,
-                url: _chart.config.url,
+                data: _chart.instances[chartSelector].config.requestData,
+                url: _chart.instances[chartSelector].config.url,
                 datatype: 'json'
             });
         };
-        this.updateData = function(pushData) {
+        this.updateData = function(chartSelector,pushData) {
             return $.ajax({
                 type: 'POST',
-                data: $.extend(_chart.config.requestData,{method: "get_update_data"}),
-                url: _chart.config.url,
+                data: $.extend({},_chart.instances[chartSelector].config.requestData,{method: "get_update_data"}),
+                url: _chart.instances[chartSelector].config.url,
                 datatype: 'json',
                 success: function(res) {
                     if(pushData){
-                      _chart.pushData(res);
+                      _chart.pushData(chartSelector,res);
                     }else{
-                      _chart.data=res;
+                      _chart.instances[chartSelector].data=res;
                     }
-                    _chart.renderBarchart();
+                    _chart.renderBarchart(chartSelector);
                 }
             });
         };
-        this.pushData = function(newData){
+        this.pushData = function(chartSelector,newData){
           $.each(_chart.data,function(index,datum){
             if(datum.hasOwnProperty("key")){
               var founded=false;
@@ -60,16 +61,16 @@ var leonardo = function(leo) {
             }
           });
         };
-        this.setBarchart3Height = function() {
-            var containerHeight = $(_chart.config.containerSelector).height(),
+        this.setBarchart3Height = function(chartSelector) {
+            var containerHeight = $(_chart.instances[chartSelector].config.containerSelector).height(),
                 svgHeight = containerHeight < 150 ? 150 : containerHeight;
-            $(_chart.config.chartSelector).height(svgHeight);
+            $(chartSelector).height(svgHeight);
         };
 
-        this.renderBarchart = function() {
-            d3.select(_chart.config.chartSelector).datum(_chart.data).call(_chart.chartInstance);
+        this.renderBarchart = function(chartSelector) {
+            d3.select(chartSelector).datum(_chart.instances[chartSelector].data).call(_chart.instances[chartSelector].chart);
         };
-        this.initBarchart = function() {
+        this.initBarchart = function(config) {
             nv.addGraph(function() {
                 var chart = nv.models.multiBarChart()
                     .reduceXTicks(true)
@@ -77,7 +78,7 @@ var leonardo = function(leo) {
                     .showControls(false)
                     .groupSpacing(0.1);
 
-                if (_chart.config.stacked) {
+                if (config.stacked) {
                     chart.stacked(true);
                 }
                 chart.xAxis
@@ -88,25 +89,26 @@ var leonardo = function(leo) {
                 chart.yAxis
                     .tickFormat(d3.format('.0'));
 
-                _chart.chartInstance = chart;
-                _chart.renderBarchart();
+                _chart.instances[config.chartSelector].chart = chart;
+                _chart.renderBarchart(config.chartSelector);
                 nv.utils.windowResize(function() {
                     chart.update()
                 });
                 return chart;
             });
 
-            _chart.setBarchart3Height();
-            $(window).resize(_chart.setBarchart3Height);
+            _chart.setBarchart3Height(config.chartSelector);
+            $(window).resize(_chart.setBarchart3Height.bind(null,config.chartSelector));
         };
         this.createBarchart = function(config) {
-            $.extend(_chart.config, config);
-            _chart.getData().done(function(res) {
-                _chart.data = res;
-                _chart.initBarchart();
+            config = $.extend({},_chart.initialConfig,config);
+            _chart.instances[config.chartSelector] = {config:config};
+            _chart.getData(config.chartSelector).done(function(res) {
+                _chart.instances[config.chartSelector].data=res;
+                _chart.initBarchart(config);
             });
-            setInterval(_chart.updateData.bind(null,true), config.updateInterval);
+            setInterval(_chart.updateData.bind(null,config.chartSelector,true), config.updateInterval);
         };
     };
-    return leo;
+    return leonardo;
 }(leonardo || {});
