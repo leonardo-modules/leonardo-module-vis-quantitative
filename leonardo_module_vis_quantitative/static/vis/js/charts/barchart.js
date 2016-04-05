@@ -41,7 +41,7 @@ var leonardo = function(leonardo) {
             });
         };
         this.pushData = function(chartSelector,newData){
-          $.each(_chart.data,function(index,datum){
+          $.each(_chart.instances[chartSelector].data,function(index,datum){
             if(datum.hasOwnProperty("key")){
               var founded=false;
               $.each(newData,function(index2,newDatum){
@@ -54,7 +54,7 @@ var leonardo = function(leonardo) {
                 }
               });
               if(!founded){
-                _chart.data = _chart.data.splice(newData);
+                _chart.instances[chartSelector].data = _chart.instances[chartSelector].data.splice(newData);
               }
             }else{
               console.log("Pushed data "+index+" not have key!");
