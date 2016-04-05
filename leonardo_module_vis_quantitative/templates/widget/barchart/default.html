@@ -1,10 +1,11 @@
+{% load static from staticfiles %}
 {% extends widget.get_base_template %}
 
 {% block content %}
 <div id="barchart_{{ widget.fe_identifier }}"><svg></svg></div>
 <script type="text/javascript">
   $(function(){
-    loadResource({src:"{{STATIC_URL}}templates/widget/barchart/barchart.js",callback: function(){
+    loadResource({src:"{% static js/charts/barchart.js %}",callback: function(){
       leonardo.charts.barchart.createBarchart({
         chartSelector:"#barchart_{{ widget.fe_identifier }} svg",
         containerSelector:"#{{ widget.fe_identifier }}",
