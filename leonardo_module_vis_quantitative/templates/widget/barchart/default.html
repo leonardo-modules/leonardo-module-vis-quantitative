@@ -4,10 +4,12 @@
 <div id="barchart_{{ widget.fe_identifier }}"><svg></svg></div>
 <script type="text/javascript">
   $(function(){
-    leonardo.charts.barchart.createBarchart({
-      chartSelector:"#barchart_{{ widget.fe_identifier }} svg",
-      containerSelector:"#{{ widget.fe_identifier }}",
-      url: "/data/data",
-      updateInterval:5000});
+    loadResource({src:"{{STATIC_URL}}templates/widget/barchart/barchart.js",callback:
+      leonardo.charts.barchart.createBarchart.bind(null,{
+        chartSelector:"#barchart_{{ widget.fe_identifier }} svg",
+        containerSelector:"#{{ widget.fe_identifier }}",
+        url: "/data/data",
+        updateInterval:5000})
+    });
   }); 
 </script>

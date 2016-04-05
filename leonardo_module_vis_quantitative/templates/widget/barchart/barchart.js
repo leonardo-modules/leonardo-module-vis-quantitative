@@ -10,6 +10,7 @@ var leonardo = function(leo) {
             chartSelector: "",
             containerSelector: "",
             url:"",
+            requestData:{},
             updateInterval: 2000,
             stacked: true,
             sliceData:true,
@@ -17,6 +18,7 @@ var leonardo = function(leo) {
         this.getData = function() {
             return $.ajax({
                 type: 'POST',
+                data: _chart.config.requestData,
                 url: _chart.config.url,
                 datatype: 'json'
             });
@@ -24,7 +26,7 @@ var leonardo = function(leo) {
         this.updateData = function(pushData) {
             return $.ajax({
                 type: 'POST',
-                data:{method: "get_update_data"},
+                data: $.extend(_chart.config.requestData,{method: "get_update_data"}),
                 url: _chart.config.url,
                 datatype: 'json',
                 success: function(res) {
