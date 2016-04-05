@@ -21,7 +21,7 @@ var leonardo = function(leonardo) {
                 type: 'POST',
                 data: _chart.instances[chartSelector].config.requestData,
                 url: _chart.instances[chartSelector].config.url,
-                datatype: 'json'
+                dataType: 'json'
             });
         };
         this.updateData = function(chartSelector,pushData) {
@@ -29,7 +29,7 @@ var leonardo = function(leonardo) {
                 type: 'POST',
                 data: $.extend({},_chart.instances[chartSelector].config.requestData,{method: "get_update_data"}),
                 url: _chart.instances[chartSelector].config.url,
-                datatype: 'json',
+                dataType: 'json',
                 success: function(res) {
                     if(pushData){
                       _chart.pushData(chartSelector,res);
