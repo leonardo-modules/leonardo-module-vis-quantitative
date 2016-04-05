@@ -4,14 +4,15 @@
 var leonardo = function(leo) {
     leo.charts = leo.charts || {};
 
-    leo.charts.barchart = new (function() {
+    leo.charts.barchart = new function() {
         var _chart = this;
         _chart.config = {
             chartSelector: "",
             containerSelector: "",
             url:"",
             updateInterval: 2000,
-            stacked: true
+            stacked: true,
+            sliceData:true,
         };
         this.getData = function() {
             return $.ajax({
@@ -43,6 +44,9 @@ var leonardo = function(leo) {
               $.each(newData,function(index2,newDatum){
                 if(datum.key === newDatum.key){
                   Array.prototype.push.apply(datum.values, newDatum.values);
+                  if(_chart.config.sliceData){
+                    datum.values=datum.values.slice(newDatum.values.length);
+                  }
                   founded=true;
                 }
               });
@@ -101,6 +105,6 @@ var leonardo = function(leo) {
             });
             setInterval(_chart.updateData.bind(null,true), config.updateInterval);
         };
-    })();
+    };
     return leo;
 }(leonardo || {});
