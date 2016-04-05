@@ -228,7 +228,7 @@ class TemporalDataWidget(Widget):
         method must accepts ``kwargs`` where the request is
         and other kwargs which are used for advance cases
         '''
-        return [randint(0, 100) for i in range(0, 100)]
+        return self.get_graphite_data()
 
     def get_update_data(self, request, **kwargs):
         '''Returns part of widget data in array or dictionary
@@ -240,7 +240,7 @@ class TemporalDataWidget(Widget):
         for calling from fronted side and this is just an example
         how to achieve that
         '''
-        return [randint(0, 100) for i in range(0, 10)]
+        return self.get_graphite_datum()
 
     auto_reload = True
 
