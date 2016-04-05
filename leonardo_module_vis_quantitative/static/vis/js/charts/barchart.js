@@ -11,6 +11,7 @@ var leonardo = function(leonardo) {
             chartSelector: "",
             containerSelector: "",
             url:"",
+            dataKey:"data",
             requestData:{},
             updateInterval: 2000,
             stacked: true,
@@ -34,7 +35,7 @@ var leonardo = function(leonardo) {
                     if(pushData){
                       _chart.pushData(chartSelector,res);
                     }else{
-                      _chart.instances[chartSelector].data=res;
+                      _chart.instances[chartSelector].data=res[_chart.instances[chartSelector].config.dataKey];
                     }
                     _chart.renderBarchart(chartSelector);
                 }
@@ -104,7 +105,7 @@ var leonardo = function(leonardo) {
             config = $.extend({},_chart.initialConfig,config);
             _chart.instances[config.chartSelector] = {config:config};
             _chart.getData(config.chartSelector).done(function(res) {
-                _chart.instances[config.chartSelector].data=res;
+                _chart.instances[config.chartSelector].data=res[config.dataKey];
                 _chart.initBarchart(config);
             });
             setInterval(_chart.updateData.bind(null,config.chartSelector,true), config.updateInterval);
