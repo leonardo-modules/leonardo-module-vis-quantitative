@@ -208,7 +208,7 @@ class TemporalDataWidget(Widget):
     @cached_property
     def cache_data_key(self):
         '''default key for data content'''
-        return 'widget.data.%s' % self.fe_identifier
+        return 'widget.%s.data' % self.fe_identifier
 
     @cached_property
     def cache_keys(self):
@@ -216,7 +216,8 @@ class TemporalDataWidget(Widget):
         flushed after save
         '''
         return [self.cache_key,
-                self.cache_data_key]
+                self.cache_data_key + '.get_data',
+                self.cache_data_key + '.get_update_data']
 
     class Meta:
         abstract = True

@@ -57,7 +57,12 @@ class WidgetDataView(View):
 
         try:
 
-            data = widget.cache.get(widget.cache_data_key)
+            cache_key = '.'.join([
+                widget.cache_data_key,
+                method_name
+            ])
+
+            data = widget.cache.get(cache_key)
 
             if data is None:
 
@@ -65,7 +70,7 @@ class WidgetDataView(View):
                 kw.update({'request': self.request})
                 data = method(**kw)
 
-                widget.cache.set(widget.cache_data_key,
+                widget.cache.set(cache_key,
                                  data, getattr(widget, 'refresh_interval', 60))
 
         except Exception as e:
