@@ -278,9 +278,9 @@ class TimeSeriesWidget(TemporalDataWidget):
         return delta
 
     def get_graph_data(self):
-        if self.data != None:
+        if self.data is not None:
             if self.data.data_source.type == "graphite":
-                return json.dumps(self.get_graphite_data())
+                return self.get_graphite_data()
             else:
                 return None
         else:
