@@ -1,5 +1,4 @@
 
-import json
 import traceback
 from django.conf import settings
 from django.http import HttpResponseForbidden, JsonResponse
@@ -8,6 +7,7 @@ from django.utils.functional import cached_property
 from django.views.generic import View
 from feincms.views.decorators import standalone
 from leonardo.module.web.widgets.utils import get_widget_from_id
+from django.core.cache import caches
 
 
 class WidgetDataView(View):
@@ -27,6 +27,10 @@ class WidgetDataView(View):
     @cached_property
     def attrs(self):
         return self.request.POST
+
+    @cached_property
+    def cache(self):
+        return caches['default']
 
     @method_decorator(standalone)
     def post(self, *args, **kwargs):
@@ -58,9 +62,16 @@ class WidgetDataView(View):
 
         try:
 
-            kw = self.attrs.get('kwargs', {})
-            kw.update({'request': self.request})
-            data = method(**kw)
+            data = self.cache.get(widget.fe_identifier)
+
+            if data is None:
+
+                kw = self.attrs.get('kwargs', {})
+                kw.update({'request': self.request})
+                data = method(**kw)
+
+                self.cache.set(widget.fe_identifier,
+                               data, getattr(widget, 'refresh_interval', 60))
 
         except Exception as e:
             response = {'error': str(e)}
