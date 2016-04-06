@@ -240,7 +240,7 @@ class TemporalDataWidget(Widget):
         for calling from fronted side and this is just an example
         how to achieve that
         '''
-        return self.get_graphite_datum()
+        return self.get_graph_data()
 
     auto_reload = True
 
