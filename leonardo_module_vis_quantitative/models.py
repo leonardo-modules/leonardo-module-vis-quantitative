@@ -12,7 +12,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from leonardo.module.web.models import Widget
 from yamlfield.fields import YAMLField
-from random import randint
 
 
 SOURCE_TYPES = (
@@ -60,7 +59,8 @@ class QuantitativeData(models.Model):
     metrics = models.TextField(verbose_name=_("metrics"))
 
     def __str__(self):
-        metrics = (self.metrics[:80] + '..') if len(self.metrics) > 80 else self.metrics
+        metrics = (self.metrics[:80] +
+                   '..') if len(self.metrics) > 80 else self.metrics
         return "%s: %s" % (self.data_source.name, metrics)
 
     class Meta:
@@ -102,16 +102,9 @@ class TemporalDataWidget(Widget):
             return now - self.get_duration_delta()
 
     def get_step_delta(self):
-        delta = None
-        if self.step_unit == 'day':
-            delta = datetime.timedelta(days=self.step_length)
-        if self.step_unit == 'hour':
-            delta = datetime.timedelta(hours=self.step_length)
-        if self.step_unit == 'minute':
-            delta = datetime.timedelta(minutes=self.step_length)
-        if self.step_unit == 'second':
-            delta = datetime.timedelta(seconds=self.step_length)
-        return delta
+        return str(datetime.timedelta(**{
+            self.step_unit + 's': self.step_length
+        }).total_seconds()).rstrip('0').rstrip('.')
 
     def get_step_label(self):
         if self.step_unit == 'day':
@@ -126,14 +119,15 @@ class TemporalDataWidget(Widget):
 
     def get_graphite_data(self, **kwargs):
         url = "%s/render" % self.data.get_host()
-        duration_delta = self.get_duration_delta().total_seconds()
         data = []
 
         for metric in self.get_metrics():
-            target = 'summarize({}, "{}s", "{}")'.format(metric["target"], str(
-                self.get_step_delta().total_seconds()).rstrip('0').rstrip('.'), self.step_fun)
+            target = 'summarize({}, "{}s", "{}")'.format(
+                metric["target"],
+                self.get_step_delta(),
+                self.step_fun)
             start = str(floor(
-                time() - self.get_duration_delta().total_seconds())).rstrip('0').rstrip('.')
+                time() - self.get_duration_delta())).rstrip('0').rstrip('.')
             params = {
                 "format": "json",
                 "from": start,
@@ -158,14 +152,15 @@ class TemporalDataWidget(Widget):
 
     def get_graphite_datum(self, **kwargs):
         url = "%s/render" % self.data.get_host()
-        duration_delta = self.get_step_delta().total_seconds()
         data = []
 
         for metric in self.get_metrics():
-            target = 'summarize({}, "{}s", "{}")'.format(metric["target"], str(
-                self.get_step_delta().total_seconds()).rstrip('0').rstrip('.'), self.step_fun)
+            target = 'summarize({}, "{}s", "{}")'.format(
+                metric["target"],
+                self.get_step_delta(), self.step_fun)
             start = str(floor(
-                time() - self.get_step_delta().total_seconds())).rstrip('0').rstrip('.')
+                time() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
+
             params = {
                 "format": "json",
                 "from": start,
@@ -176,17 +171,21 @@ class TemporalDataWidget(Widget):
             json_dict = json.loads(request.text)
             item_dict = {}
             for i, item in enumerate(json_dict):
-                json_not_none = [ x for x in item['datapoints'] if None not in x ]
+                json_not_none = [x for x in item[
+                    'datapoints'] if None not in x]
                 if len(json_not_none) == 0:
-                # I expect this to be caused by very short step, try with longer step
-                # TODO: actually get the step and set second try step larger
+                    # I expect this to be caused by very short step, try with longer step
+                    # TODO: actually get the step and set second try step
+                    # larger
                     if not item_dict:
-                        start = str(floor(time() - datetime.timedelta(minutes=5).total_seconds())).rstrip('0').rstrip('.')
+                        start = str(floor(
+                            time() - datetime.timedelta(minutes=5).total_seconds())).rstrip('0').rstrip('.')
                         params['from'] = start
                         wide_request = requests.get(url, params=params)
                         values_dict = json.loads(wide_request.text)
                         item_dict = values_dict
-                    not_none = [ x for x in item_dict[i]['datapoints'] if None not in x ]
+                    not_none = [x for x in item_dict[i]
+                                ['datapoints'] if None not in x]
                     value = 0
                     if len(not_none) > 0:
                         value = not_none[-1][0]
@@ -266,16 +265,9 @@ class TimeSeriesWidget(TemporalDataWidget):
         return self.data.data_source
 
     def get_duration_delta(self):
-        delta = None
-        if self.duration_unit == 'day':
-            delta = datetime.timedelta(days=self.duration_length)
-        if self.duration_unit == 'hour':
-            delta = datetime.timedelta(hours=self.duration_length)
-        if self.duration_unit == 'minute':
-            delta = datetime.timedelta(minutes=self.duration_length)
-        if self.duration_unit == 'second':
-            delta = datetime.timedelta(seconds=self.duration_length)
-        return delta
+        return datetime.timedelta(**{
+            self.duration_unit + 's': self.duration_length
+        }).total_seconds()
 
     def get_graph_data(self):
         if self.data is not None:
@@ -307,3 +299,17 @@ class NumericWidget(TemporalDataWidget):
 
     class Meta:
         abstract = True
+
+#    tabs = {
+#        'Format': {
+#            'name': _('Format'),
+#            'fields': ('duration_length', 'duration_unit',
+#                       'low_horizon', 'high_horizon')
+#        },
+#        'Data': {
+#            'name': _('Data'),
+#            'fields': ('step_length', 'step_length',
+#                       'step_unit', 'step_fun',
+#                       'start', 'align_to_from')
+#        }
+#    }

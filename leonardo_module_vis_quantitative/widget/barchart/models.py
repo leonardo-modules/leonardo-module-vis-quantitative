@@ -1,7 +1,4 @@
 
-import time
-import json
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -11,6 +8,7 @@ DISPLAY_CHOICES = (
     ('stack', _('Stacked')),
     ('group', _('Grouped')),
 )
+
 
 class BarChartWidget(TimeSeriesWidget):
     """
