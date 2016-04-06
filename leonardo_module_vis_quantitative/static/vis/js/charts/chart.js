@@ -15,6 +15,34 @@ function Chart() {
         };
 }
 Chart.prototype =  {
+    create: function(config) {
+      var chart = this;
+      config = $.extend({},chart.initialConfig,config);
+      chart.instances[config.chartSelector] = {config:config};
+      chart.getData(config.chartSelector).done(function(res) {
+          // test response validity
+          if(chart.testResponse(res,config.dataKey)){
+              chart.instances[config.chartSelector].data=(config.dataKey)?res[config.dataKey]:res;
+              chart.init(config);
+              setInterval(function(){
+                  chart.updateData(config.chartSelector).done(function(res) {
+                      if(chart.testResponse(res,config.dataKey)){
+                          if(config.pushOrReplaceData == "push"){
+                            chart.pushData(config.chartSelector,(config.dataKey)?res[config.dataKey]:res);
+                          }else{
+                            chart.instances[config.chartSelector].data=(config.dataKey)?res[config.dataKey]:res;
+                          }
+                          chart.render(config.chartSelector);
+                      }
+                  }).fail(function(err){
+                      console.log("Server error in update "+err);
+                  });
+              }, config.updateInterval);
+          }
+      }).fail(function(err){
+          console.log("Server error on init "+err);
+      });
+    },
     getData: function(chartSelector) {
         var chart= this;
         return $.ajax({
@@ -54,5 +82,16 @@ Chart.prototype =  {
           console.log("Pushed data "+index+" not have key or undefined!");
         }
       });
+    },
+    testResponse: function(response, dataKey){
+      if(typeof response === 'object' && (!dataKey || response.hasOwnProperty(dataKey))){
+        return true;
+      }else{
+        console.log("Server response object is not valid, dataKey="+dataKey);
+        return false;
+      }
+    },
+    getChart: function(chartSelector){
+      return this.instances[chartSelector];
     }
 };

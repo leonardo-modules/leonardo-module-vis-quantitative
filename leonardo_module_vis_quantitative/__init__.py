@@ -27,7 +27,7 @@ LEONARDO_SCSS_FILES = [
 LEONARDO_APPS = [
     'leonardo_module_vis_quantitative',
 ]
-<
+
 LEONARDO_WIDGETS = [
     'leonardo_module_vis_quantitative.widget.angulargauge.models.AngularGaugeWidget',
     'leonardo_module_vis_quantitative.widget.areachart.models.AreaChartWidget',
