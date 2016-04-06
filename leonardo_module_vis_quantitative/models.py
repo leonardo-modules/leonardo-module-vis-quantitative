@@ -1,9 +1,9 @@
 # -*- coding:/ utf-8 -*-
-
 import datetime
-from math import floor
-from time import time
 import json
+from math import floor
+from random import randint
+from time import time
 
 import requests
 from django.db import models
@@ -12,7 +12,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from leonardo.module.web.models import Widget
 from yamlfield.fields import YAMLField
-
 
 SOURCE_TYPES = (
     ('dummy', _('Test data')),
@@ -102,6 +101,10 @@ class TemporalDataWidget(Widget):
             return now - self.get_duration_delta()
 
     @cached_property
+    def source(self):
+        return self.data.data_source
+
+    @cached_property
     def refresh_interval(self):
         '''returns interval in seconds'''
         return datetime.timedelta(**{
@@ -157,7 +160,99 @@ class TemporalDataWidget(Widget):
 
         return data
 
-    def get_graphite_datum(self, **kwargs):
+    def get_metrics(self):
+        metrics = self.data.metrics.split("\n")
+        ret = []
+        for metric in metrics:
+            if metric.strip('\n').strip('\r') != '':
+                line = metric.strip('\n').strip('\r').split('|')
+                final_line = {
+                    'target': line[0],
+                    'unit': line[1],
+                    'name': line[2]
+                }
+                if len(line) > 5:
+                    final_line['type'] = line[3]
+                    final_line['x'] = line[4]
+                    final_line['y'] = line[5]
+                ret.append(final_line)
+        return ret
+
+    def get_data(self, request, **kwargs):
+        '''Returns all widget data in array or dictionary
+        method must accepts ``kwargs`` where the request is
+        and other kwargs which are used for advance cases
+        '''
+        return self.get_graph_data()
+
+    def get_update_data(self, request, **kwargs):
+        '''Returns part of widget data in array or dictionary
+        method must accepts ``kwargs`` where the request is
+        and other kwargs which are used for advance cases
+        such as filtering etc.
+
+        You can make your custom method which will be available
+        for calling from fronted side and this is just an example
+        how to achieve that
+        '''
+        return self.get_graph_data()
+
+    def get_graph_data(self):
+        '''returns data by source type
+        '''
+        if self.data is not None:
+            return getattr(self,
+                           'get_%s_data' % self.data.data_source.type
+                           )()
+
+    @cached_property
+    def cache_data_key(self):
+        '''default key for data content'''
+        return 'widget.data.%s' % self.fe_identifier
+
+    @cached_property
+    def cache_keys(self):
+        '''Returns all cache keys which would be
+        flushed after save
+        '''
+        return [self.cache_key,
+                self.cache_data_key]
+
+    class Meta:
+        abstract = True
+
+
+class TimeSeriesWidget(TemporalDataWidget):
+    """
+    Time-series widget mixin.
+    """
+    duration_length = models.IntegerField(
+        verbose_name=_('duration length'), default=2)
+    duration_unit = models.CharField(max_length=55, verbose_name=_(
+        'duration unit'), choices=TIME_UNITS, default="hour")
+    low_horizon = models.IntegerField(
+        verbose_name=_('low horizon'), blank=True, null=True)
+    high_horizon = models.IntegerField(
+        verbose_name=_('high horizon'), blank=True, null=True)
+
+    def get_duration_delta(self):
+        return datetime.timedelta(**{
+            self.duration_unit + 's': self.duration_length
+        }).total_seconds()
+
+    class Meta:
+        abstract = True
+
+
+class NumericWidget(TemporalDataWidget):
+    """
+    NumericValue widget mixin.
+    """
+
+    def get_dummy_data(self):
+        return {'value': randint(0, 100)}
+
+    def get_graphite_data(self, **kwargs):
         url = "%s/render" % self.data.get_host()
         data = []
 
@@ -210,99 +305,6 @@ class TemporalDataWidget(Widget):
                     data.append(datum)
 
         return data
-
-    def get_metrics(self):
-        metrics = self.data.metrics.split("\n")
-        ret = []
-        for metric in metrics:
-            if metric.strip('\n').strip('\r') != '':
-                line = metric.strip('\n').strip('\r').split('|')
-                final_line = {
-                    'target': line[0],
-                    'unit': line[1],
-                    'name': line[2]
-                }
-                if len(line) > 5:
-                    final_line['type'] = line[3]
-                    final_line['x'] = line[4]
-                    final_line['y'] = line[5]
-                ret.append(final_line)
-        return ret
-
-    def get_data(self, request, **kwargs):
-        '''Returns all widget data in array or dictionary
-        method must accepts ``kwargs`` where the request is
-        and other kwargs which are used for advance cases
-        '''
-        return self.get_graph_data()
-
-    def get_update_data(self, request, **kwargs):
-        '''Returns part of widget data in array or dictionary
-        method must accepts ``kwargs`` where the request is
-        and other kwargs which are used for advance cases
-        such as filtering etc.
-
-        You can make your custom method which will be available
-        for calling from fronted side and this is just an example
-        how to achieve that
-        '''
-        return self.get_graph_data()
-
-    auto_reload = True
-
-    class Meta:
-        abstract = True
-
-
-class TimeSeriesWidget(TemporalDataWidget):
-    """
-    Time-series widget mixin.
-    """
-    duration_length = models.IntegerField(
-        verbose_name=_('duration length'), default=2)
-    duration_unit = models.CharField(max_length=55, verbose_name=_(
-        'duration unit'), choices=TIME_UNITS, default="hour")
-    low_horizon = models.IntegerField(
-        verbose_name=_('low horizon'), blank=True, null=True)
-    high_horizon = models.IntegerField(
-        verbose_name=_('high horizon'), blank=True, null=True)
-
-    @cached_property
-    def source(self):
-        return self.data.data_source
-
-    def get_duration_delta(self):
-        return datetime.timedelta(**{
-            self.duration_unit + 's': self.duration_length
-        }).total_seconds()
-
-    def get_graph_data(self):
-        if self.data is not None:
-            if self.data.data_source.type == "graphite":
-                return self.get_graphite_data()
-            else:
-                return None
-        else:
-            return None
-
-    class Meta:
-        abstract = True
-
-
-class NumericWidget(TemporalDataWidget):
-    """
-    NumericValue widget mixin.
-    """
-
-    def get_graph_data(self):
-        if self.data.data_source.type == "graphite":
-            return self.get_graphite_datum()
-        else:
-            return None
-
-    @cached_property
-    def source(self):
-        return self.data.data_source
 
     class Meta:
         abstract = True
