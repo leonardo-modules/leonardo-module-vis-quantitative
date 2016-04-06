@@ -10,7 +10,7 @@ function Chart() {
             dataKey:"data",
             requestData:{},
             updateInterval: 2000,
-            pushOrReplaceData:"push",
+            pushOrReplaceData:"replace",
             sliceData:true,
         };
 }

@@ -11,7 +11,7 @@
         containerSelector:"#{{ widget.fe_identifier }}",
         url: "/data/data/",
         requestData:{widget_id:$("#barchart_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
-        updateInterval:{{ widget..get_step_delta }} * 1000});
+        updateInterval:5000});
     }});
   }); 
 </script>
