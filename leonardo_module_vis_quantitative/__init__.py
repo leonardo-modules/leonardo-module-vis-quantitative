@@ -12,6 +12,7 @@ LEONARDO_JS_FILES = [
     'vis/js/angular_gauge_area.js',
     'vis/js/angular_gauge_pointer.js',
     'vis/js/concentric_gauge_area.js',
+    'vis/js/charts/chart.js',
     'vendor/js/d3pie.js',
     'vendor/js/nvd3.js',
     'vendor/js/cubism.js'
@@ -26,7 +27,7 @@ LEONARDO_SCSS_FILES = [
 LEONARDO_APPS = [
     'leonardo_module_vis_quantitative',
 ]
-
+<
 LEONARDO_WIDGETS = [
     'leonardo_module_vis_quantitative.widget.angulargauge.models.AngularGaugeWidget',
     'leonardo_module_vis_quantitative.widget.areachart.models.AreaChartWidget',

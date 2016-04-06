@@ -6,7 +6,7 @@
 <script type="text/javascript">
   $(function(){
     loadResource({src:'{% static "vis/js/charts/barchart.js" %}',callback: function(){
-      leonardo.charts.barchart.createBarchart({
+      leonardo.charts.barchart.create({
         chartSelector:"#barchart_{{ widget.fe_identifier }} svg",
         containerSelector:"#{{ widget.fe_identifier }}",
         url: "/data/data/",
