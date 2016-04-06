@@ -7,7 +7,6 @@ from django.utils.functional import cached_property
 from django.views.generic import View
 from feincms.views.decorators import standalone
 from leonardo.module.web.widgets.utils import get_widget_from_id
-from django.core.cache import caches
 
 
 class WidgetDataView(View):
@@ -27,10 +26,6 @@ class WidgetDataView(View):
     @cached_property
     def attrs(self):
         return self.request.POST
-
-    @cached_property
-    def cache(self):
-        return caches['default']
 
     @method_decorator(standalone)
     def post(self, *args, **kwargs):
@@ -62,7 +57,7 @@ class WidgetDataView(View):
 
         try:
 
-            data = self.cache.get(widget.cache_data_key)
+            data = widget.cache.get(widget.cache_data_key)
 
             if data is None:
 
@@ -70,14 +65,18 @@ class WidgetDataView(View):
                 kw.update({'request': self.request})
                 data = method(**kw)
 
-                self.cache.set(widget.cache_data_key,
-                               data, getattr(widget, 'refresh_interval', 60))
+                widget.cache.set(widget.cache_data_key,
+                                 data, getattr(widget, 'refresh_interval', 60))
 
         except Exception as e:
+
             response = {'error': str(e)}
+
             if settings.DEBUG:
                 response['traceback'] = traceback.format_exc()
+
             return JsonResponse(response)
+
         else:
             return JsonResponse({'data': data, 'id': id})
 
