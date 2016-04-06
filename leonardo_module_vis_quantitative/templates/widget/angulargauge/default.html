@@ -49,7 +49,7 @@ function redraw_angular_gauge_{{ widget.id }}(value){
 
     setTimeout(function() {
       loop_angular_gauge();
-    }, 5000);
+    }, {{ widget.refresh_interval }} * 1000);
   }
   loop_angular_gauge();
 }

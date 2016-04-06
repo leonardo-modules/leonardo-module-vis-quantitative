@@ -101,6 +101,13 @@ class TemporalDataWidget(Widget):
             now = datetime.datetime.now()
             return now - self.get_duration_delta()
 
+    @cached_property
+    def refresh_interval(self):
+        '''returns interval in seconds'''
+        return datetime.timedelta(**{
+            self.step_unit + 's': self.step_length
+        }).total_seconds()
+
     def get_step_delta(self):
         return str(datetime.timedelta(**{
             self.step_unit + 's': self.step_length
@@ -289,7 +296,7 @@ class NumericWidget(TemporalDataWidget):
 
     def get_graph_data(self):
         if self.data.data_source.type == "graphite":
-            return json.dumps(self.get_graphite_datum())
+            return self.get_graphite_datum()
         else:
             return None
 
