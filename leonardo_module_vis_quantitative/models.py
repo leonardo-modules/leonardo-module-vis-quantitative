@@ -241,6 +241,13 @@ class TimeSeriesWidget(TemporalDataWidget):
             self.duration_unit + 's': self.duration_length
         }).total_seconds()
 
+    def get_dummy_data(self):
+        return [{
+                'key': 'dummy',
+                'values': [{'x': i, 'y': randint(0, 100)}
+                           for i in range(0, 100)]
+                }]
+
     class Meta:
         abstract = True
 
