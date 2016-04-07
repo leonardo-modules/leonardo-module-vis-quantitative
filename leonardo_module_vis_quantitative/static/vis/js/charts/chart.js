@@ -52,7 +52,7 @@ Chart.prototype =  {
             datatype: 'json'
         });
     },
-    updateData: function(chartSelector,pushData) {
+    updateData: function(chartSelector) {
         var chart=this;
         return $.ajax({
             type: 'POST',
