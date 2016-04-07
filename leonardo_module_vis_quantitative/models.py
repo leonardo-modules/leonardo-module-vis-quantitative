@@ -255,6 +255,7 @@ class NumericWidget(TemporalDataWidget):
 
     def get_graphite_data(self, **kwargs):
         url = "%s/render" % self.data.get_host()
+
         data = []
 
         for metric in self.get_metrics():
@@ -292,18 +293,17 @@ class NumericWidget(TemporalDataWidget):
                     value = 0
                     if len(not_none) > 0:
                         value = not_none[-1][0]
-                    datum = {
+                    data.append({
                         'label': metric['name'],
                         'value': value
-                    }
-                    data.append(datum)
+                    })
                 else:
-                    value = json_not_none[-1][0]
-                    datum = {
-                        'label': metric['name'],
-                        'value': value
-                    }
-                    data.append(datum)
+                    data.append({
+                        'value': reduce(
+                            lambda x, y: x[0] + y[0],
+                            json_not_none) / len(json_not_none),
+                        'label': metric['name']
+                    })
 
         return data
 
