@@ -16,23 +16,23 @@ function Chart() {
 }
 Chart.prototype =  {
     create: function(config) {
-      var chart = this;
-      config = $.extend({},chart.initialConfig,config);
-      chart.instances[config.chartSelector] = {config:config};
-      chart.getData(config.chartSelector).done(function(res) {
+      var self = this;
+      config = $.extend({},self.initialConfig,config);
+      self.instances[config.chartSelector] = {config:config};
+      self.getData(config.chartSelector).done(function(res) {
           // test response validity
-          if(chart.testResponse(res,config.dataKey)){
-              chart.instances[config.chartSelector].data=(config.dataKey)?res[config.dataKey]:res;
-              chart.init(config);
+          if(self.testResponse(res,config.dataKey)){
+              self.instances[config.chartSelector].data=(config.dataKey)?res[config.dataKey]:res;
+              self.init(config);
               setInterval(function(){
-                  chart.updateData(config.chartSelector).done(function(res) {
-                      if(chart.testResponse(res,config.dataKey)){
+                  self.updateData(config.chartSelector).done(function(res) {
+                      if(self.testResponse(res,config.dataKey)){
                           if(config.pushOrReplaceData == "push"){
-                            chart.pushData(config.chartSelector,(config.dataKey)?res[config.dataKey]:res);
+                            self.pushData(config.chartSelector,(config.dataKey)?res[config.dataKey]:res);
                           }else{
-                            chart.instances[config.chartSelector].data=(config.dataKey)?res[config.dataKey]:res;
+                            self.instances[config.chartSelector].data=(config.dataKey)?res[config.dataKey]:res;
                           }
-                          chart.render(config.chartSelector);
+                          self.render(config.chartSelector);
                       }
                   }).fail(function(err){
                       console.log("Server error in update "+err);
@@ -44,39 +44,39 @@ Chart.prototype =  {
       });
     },
     getData: function(chartSelector) {
-        var chart= this;
+        var self= this;
         return $.ajax({
             type: 'POST',
-            data: chart.instances[chartSelector].config.requestData,
-            url: chart.instances[chartSelector].config.url,
+            data: self.instances[chartSelector].config.requestData,
+            url: self.instances[chartSelector].config.url,
             datatype: 'json'
         });
     },
     updateData: function(chartSelector) {
-        var chart=this;
+        var self=this;
         return $.ajax({
             type: 'POST',
-            data: $.extend({},chart.instances[chartSelector].config.requestData,{method: "get_update_data"}),
-            url: chart.instances[chartSelector].config.url,
+            data: $.extend({},self.instances[chartSelector].config.requestData,{method: "get_update_data"}),
+            url: self.instances[chartSelector].config.url,
             datatype: 'json'
         });
     },
     pushData: function(chartSelector,newData){
-      var chart=this;
-      $.each(chart.instances[chartSelector].data,function(index,datum){
+      var self=this;
+      $.each(self.instances[chartSelector].data,function(index,datum){
         if(datum && datum.hasOwnProperty("key")){
           var founded=false;
           $.each(newData,function(index2,newDatum){
             if(datum.key === newDatum.key){
               Array.prototype.push.apply(datum.values, newDatum.values);
-              if(chart.instances[chartSelector].config.sliceData){
+              if(self.instances[chartSelector].config.sliceData){
                 datum.values=datum.values.slice(newDatum.values.length);
               }
               founded=true;
             }
           });
           if(!founded){
-            chart.instances[chartSelector].data = chart.instances[chartSelector].data.splice(newData);
+            self.instances[chartSelector].data = self.instances[chartSelector].data.splice(newData);
           }
         }else{
           console.log("Pushed data "+index+" not have key or undefined!");
@@ -85,6 +85,9 @@ Chart.prototype =  {
     },
     testResponse: function(response, dataKey){
       if(typeof response === 'object' && (!dataKey || response.hasOwnProperty(dataKey))){
+        if(dataKey && (!response[dataKey] || response[dataKey] ==null)){
+          return false;
+        }
         return true;
       }else{
         console.log("Server response object is not valid, dataKey="+dataKey);

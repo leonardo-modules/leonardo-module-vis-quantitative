@@ -1,13 +1,12 @@
 /*
- *  Leonardo charts nvd3.js barchart module 
+ *  Leonardo charts nvd3.js linechart module 
  */
 var leonardo = function(leonardo) {
     leonardo.charts = leonardo.charts || {};
 
-    Barchart.inherits(Chart);
-    function Barchart() {
+    Linechart.inherits(Chart);
+    function Linechart() {
         Chart.apply(this, arguments);
-        this.initialConfig.stacked=true;
         
         var self = this;
         this.setChartHeight = function(chartSelector) {
@@ -20,33 +19,32 @@ var leonardo = function(leonardo) {
             d3.select(chartSelector).datum(this.getChart(chartSelector).data).call(this.getChart(chartSelector).chart);
         };
         this.init = function(config) {
-            nv.addGraph(function() {
-                var chart = nv.models.multiBarChart()
-                    .reduceXTicks(true)
-                    .rotateLabels(0)
-                    .showControls(false)
-                    .groupSpacing(0.1);
-                if (config.stacked) {
-                    chart.stacked(true);
-                }
-                chart.xAxis
-                    .tickFormat(function(d) {
-                        return d3.time.format('%d-%b')(new Date(d * 1000));
-                    });
-                chart.yAxis
-                    .tickFormat(d3.format('.0'));
+             nv.addGraph(function() {
+                var chart = nv.models.lineChart() 
+                              .showLegend(true)      
+                              .showYAxis(true)       
+                              .showXAxis(true)
+                              .interpolate(config.interpolation)
+                              .forceY([0, 0.01])
+                              .useInteractiveGuideline(true);
+              
+                chart.xAxis    
+                    .tickFormat(function(d){return d3.time.format('%x')(new Date(d*1000));});
+              
+                chart.yAxis   
+                    .tickFormat(d3.format('.04f'));
+
                 self.instances[config.chartSelector].chart = chart;
                 self.render(config.chartSelector);
-                nv.utils.windowResize(function() {
-                    chart.update()
-                });
+                //Update the chart when window resizes.
+                nv.utils.windowResize(function() { chart.update() });
                 return chart;
-            });
+              });
 
             self.setChartHeight(config.chartSelector);
             $(window).resize(self.setChartHeight.bind(this,config.chartSelector));
         };
     };
-    leonardo.charts.barchart = new Barchart();
+    leonardo.charts.linechart = new Linechart();
     return leonardo;
 }(leonardo || {});
