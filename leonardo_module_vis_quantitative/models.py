@@ -251,7 +251,7 @@ class NumericWidget(TemporalDataWidget):
     """
 
     def get_dummy_data(self):
-        return {'value': randint(0, 100)}
+        return [{'value': randint(0, 100)}]
 
     def get_graphite_data(self, **kwargs):
         url = "%s/render" % self.data.get_host()
