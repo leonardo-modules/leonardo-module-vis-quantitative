@@ -13,8 +13,6 @@ INTERPOLATION_CHOICES = (
     ('step', _('step')),
 )
 
-horizon_folds = models.IntegerField(verbose_name=_('horizon folds'), default=1)
-
 class HorizonChartWidget(TimeSeriesWidget):
     """
     Widget which shows horizon chart.
