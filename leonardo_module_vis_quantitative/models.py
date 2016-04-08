@@ -197,7 +197,7 @@ class TemporalDataWidget(Widget):
         if self.data is not None:
             return getattr(self,
                            'get_update_%s_data' % self.data.data_source.type,
-                           'get_graph_data')()
+                           self.get_graph_data)()
 
     def get_graph_data(self):
         '''returns data by source type
