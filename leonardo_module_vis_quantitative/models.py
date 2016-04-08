@@ -4,7 +4,6 @@ import json
 from math import floor
 from random import randint
 from time import time
-
 import requests
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
@@ -195,7 +194,10 @@ class TemporalDataWidget(Widget):
         for calling from fronted side and this is just an example
         how to achieve that
         '''
-        return self.get_graph_data()
+        if self.data is not None:
+            return getattr(self,
+                           'get_update_%s_data' % self.data.data_source.type,
+                           'get_graph_data')()
 
     def get_graph_data(self):
         '''returns data by source type
@@ -244,8 +246,15 @@ class TimeSeriesWidget(TemporalDataWidget):
     def get_dummy_data(self):
         return [{
                 'key': 'dummy',
-                'values': [{'x': i, 'y': randint(0, 100)}
+                'values': [{'x': time(), 'y': randint(0, 100)}
                            for i in range(0, 100)]
+                }]
+
+    def get_update_dummy_data(self):
+        return [{
+                'key': 'dummy',
+                'values': [{'x': time(), 'y': randint(0, 100)}
+                           for i in range(0, self.step_length)]
                 }]
 
     class Meta:
