@@ -12,7 +12,7 @@ var leonardo = function(leonardo) {
         this.initialConfig.max=100,
         this.initialConfig.minorTicks= 5;
         //enforce replacing data
-        this.pushOrReplaceData="replace";
+        this.initialConfig.pushOrReplaceData="replace";
         
         this.render = function(chartSelector) {
             var data=this.getDataValue(chartSelector);

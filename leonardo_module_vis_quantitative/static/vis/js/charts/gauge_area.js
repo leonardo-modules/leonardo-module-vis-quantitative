@@ -9,7 +9,7 @@ var leonardo = function(leonardo) {
         Chart.apply(this, arguments);
         var self = this;
         //enforce replacing data
-        this.pushOrReplaceData="replace";
+        this.initialConfig.pushOrReplaceData="replace";
         
         this.render = function(chartSelector) {
             var data=this.getDataValue(chartSelector),config = self.instances[chartSelector].config;
