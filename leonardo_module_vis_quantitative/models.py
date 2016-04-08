@@ -1,10 +1,9 @@
 # -*- coding:/ utf-8 -*-
-
 import datetime
-from math import floor
-from time import time
 import json
-
+from math import floor
+from random import randint
+from time import time
 import requests
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
@@ -12,8 +11,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from leonardo.module.web.models import Widget
 from yamlfield.fields import YAMLField
-from random import randint
-
 
 SOURCE_TYPES = (
     ('dummy', _('Test data')),
@@ -60,7 +57,8 @@ class QuantitativeData(models.Model):
     metrics = models.TextField(verbose_name=_("metrics"))
 
     def __str__(self):
-        metrics = (self.metrics[:80] + '..') if len(self.metrics) > 80 else self.metrics
+        metrics = (self.metrics[:80] +
+                   '..') if len(self.metrics) > 80 else self.metrics
         return "%s: %s" % (self.data_source.name, metrics)
 
     class Meta:
@@ -101,17 +99,21 @@ class TemporalDataWidget(Widget):
             now = datetime.datetime.now()
             return now - self.get_duration_delta()
 
+    @cached_property
+    def source(self):
+        return self.data.data_source
+
+    @cached_property
+    def refresh_interval(self):
+        '''returns interval in seconds'''
+        return datetime.timedelta(**{
+            self.step_unit + 's': self.step_length
+        }).total_seconds()
+
     def get_step_delta(self):
-        delta = None
-        if self.step_unit == 'day':
-            delta = datetime.timedelta(days=self.step_length)
-        if self.step_unit == 'hour':
-            delta = datetime.timedelta(hours=self.step_length)
-        if self.step_unit == 'minute':
-            delta = datetime.timedelta(minutes=self.step_length)
-        if self.step_unit == 'second':
-            delta = datetime.timedelta(seconds=self.step_length)
-        return delta
+        return str(datetime.timedelta(**{
+            self.step_unit + 's': self.step_length
+        }).total_seconds()).rstrip('0').rstrip('.')
 
     def get_step_label(self):
         if self.step_unit == 'day':
@@ -126,14 +128,15 @@ class TemporalDataWidget(Widget):
 
     def get_graphite_data(self, **kwargs):
         url = "%s/render" % self.data.get_host()
-        duration_delta = self.get_duration_delta().total_seconds()
         data = []
 
         for metric in self.get_metrics():
-            target = 'summarize({}, "{}s", "{}")'.format(metric["target"], str(
-                self.get_step_delta().total_seconds()).rstrip('0').rstrip('.'), self.step_fun)
+            target = 'summarize({}, "{}s", "{}")'.format(
+                metric["target"],
+                self.get_step_delta(),
+                self.step_fun)
             start = str(floor(
-                time() - self.get_duration_delta().total_seconds())).rstrip('0').rstrip('.')
+                time() - self.get_duration_delta())).rstrip('0').rstrip('.')
             params = {
                 "format": "json",
                 "from": start,
@@ -153,55 +156,6 @@ class TemporalDataWidget(Widget):
                 'values': values
             }
             data.append(datum)
-
-        return data
-
-    def get_graphite_datum(self, **kwargs):
-        url = "%s/render" % self.data.get_host()
-        duration_delta = self.get_step_delta().total_seconds()
-        data = []
-
-        for metric in self.get_metrics():
-            target = 'summarize({}, "{}s", "{}")'.format(metric["target"], str(
-                self.get_step_delta().total_seconds()).rstrip('0').rstrip('.'), self.step_fun)
-            start = str(floor(
-                time() - self.get_step_delta().total_seconds())).rstrip('0').rstrip('.')
-            params = {
-                "format": "json",
-                "from": start,
-                "target": target,
-            }
-
-            request = requests.get(url, params=params)
-            json_dict = json.loads(request.text)
-            item_dict = {}
-            for i, item in enumerate(json_dict):
-                json_not_none = [ x for x in item['datapoints'] if None not in x ]
-                if len(json_not_none) == 0:
-                # I expect this to be caused by very short step, try with longer step
-                # TODO: actually get the step and set second try step larger
-                    if not item_dict:
-                        start = str(floor(time() - datetime.timedelta(minutes=5).total_seconds())).rstrip('0').rstrip('.')
-                        params['from'] = start
-                        wide_request = requests.get(url, params=params)
-                        values_dict = json.loads(wide_request.text)
-                        item_dict = values_dict
-                    not_none = [ x for x in item_dict[i]['datapoints'] if None not in x ]
-                    value = 0
-                    if len(not_none) > 0:
-                        value = not_none[-1][0]
-                    datum = {
-                        'label': metric['name'],
-                        'value': value
-                    }
-                    data.append(datum)
-                else:
-                    value = json_not_none[-1][0]
-                    datum = {
-                        'label': metric['name'],
-                        'value': value
-                    }
-                    data.append(datum)
 
         return data
 
@@ -240,9 +194,32 @@ class TemporalDataWidget(Widget):
         for calling from fronted side and this is just an example
         how to achieve that
         '''
-        return self.get_graph_data()
+        if self.data is not None:
+            return getattr(self,
+                           'get_update_%s_data' % self.data.data_source.type,
+                           'get_graph_data')()
 
-    auto_reload = True
+    def get_graph_data(self):
+        '''returns data by source type
+        '''
+        if self.data is not None:
+            return getattr(self,
+                           'get_%s_data' % self.data.data_source.type
+                           )()
+
+    @cached_property
+    def cache_data_key(self):
+        '''default key for data content'''
+        return 'widget.%s.data' % self.fe_identifier
+
+    @cached_property
+    def cache_keys(self):
+        '''Returns all cache keys which would be
+        flushed after save
+        '''
+        return [self.cache_key,
+                self.cache_data_key + '.get_data',
+                self.cache_data_key + '.get_update_data']
 
     class Meta:
         abstract = True
@@ -261,30 +238,24 @@ class TimeSeriesWidget(TemporalDataWidget):
     high_horizon = models.IntegerField(
         verbose_name=_('high horizon'), blank=True, null=True)
 
-    @cached_property
-    def source(self):
-        return self.data.data_source
-
     def get_duration_delta(self):
-        delta = None
-        if self.duration_unit == 'day':
-            delta = datetime.timedelta(days=self.duration_length)
-        if self.duration_unit == 'hour':
-            delta = datetime.timedelta(hours=self.duration_length)
-        if self.duration_unit == 'minute':
-            delta = datetime.timedelta(minutes=self.duration_length)
-        if self.duration_unit == 'second':
-            delta = datetime.timedelta(seconds=self.duration_length)
-        return delta
+        return datetime.timedelta(**{
+            self.duration_unit + 's': self.duration_length
+        }).total_seconds()
 
-    def get_graph_data(self):
-        if self.data != None:
-            if self.data.data_source.type == "graphite":
-                return json.dumps(self.get_graphite_data())
-            else:
-                return None
-        else:
-            return None
+    def get_dummy_data(self):
+        return [{
+                'key': 'dummy',
+                'values': [{'x': time(), 'y': randint(0, 100)}
+                           for i in range(0, 100)]
+                }]
+
+    def get_update_dummy_data(self):
+        return [{
+                'key': 'dummy',
+                'values': [{'x': time(), 'y': randint(0, 100)}
+                           for i in range(0, self.step_length)]
+                }]
 
     class Meta:
         abstract = True
@@ -295,15 +266,76 @@ class NumericWidget(TemporalDataWidget):
     NumericValue widget mixin.
     """
 
-    def get_graph_data(self):
-        if self.data.data_source.type == "graphite":
-            return json.dumps(self.get_graphite_datum())
-        else:
-            return None
+    def get_dummy_data(self):
+        return [{'value': randint(0, 100)}]
 
-    @cached_property
-    def source(self):
-        return self.data.data_source
+    def get_graphite_data(self, **kwargs):
+        url = "%s/render" % self.data.get_host()
+
+        data = []
+
+        for metric in self.get_metrics():
+            target = 'summarize({}, "{}s", "{}")'.format(
+                metric["target"],
+                self.get_step_delta(), self.step_fun)
+            start = str(floor(
+                time() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
+
+            params = {
+                "format": "json",
+                "from": start,
+                "target": target,
+            }
+
+            request = requests.get(url, params=params)
+            json_dict = json.loads(request.text)
+            item_dict = {}
+            for i, item in enumerate(json_dict):
+                json_not_none = [x for x in item[
+                    'datapoints'] if None not in x]
+                if len(json_not_none) == 0:
+                    # I expect this to be caused by very short step, try with longer step
+                    # TODO: actually get the step and set second try step
+                    # larger
+                    if not item_dict:
+                        start = str(floor(
+                            time() - datetime.timedelta(minutes=5).total_seconds())).rstrip('0').rstrip('.')
+                        params['from'] = start
+                        wide_request = requests.get(url, params=params)
+                        values_dict = json.loads(wide_request.text)
+                        item_dict = values_dict
+                    not_none = [x for x in item_dict[i]
+                                ['datapoints'] if None not in x]
+                    value = 0
+                    if len(not_none) > 0:
+                        value = not_none[-1][0]
+                    data.append({
+                        'label': metric['name'],
+                        'value': value
+                    })
+                else:
+                    data.append({
+                        'value': reduce(
+                            lambda x, y: x[0] + y[0],
+                            json_not_none) / len(json_not_none),
+                        'label': metric['name']
+                    })
+
+        return data
 
     class Meta:
         abstract = True
+
+#    tabs = {
+#        'Format': {
+#            'name': _('Format'),
+#            'fields': ('duration_length', 'duration_unit',
+#                       'low_horizon', 'high_horizon')
+#        },
+#        'Data': {
+#            'name': _('Data'),
+#            'fields': ('step_length', 'step_length',
+#                       'step_unit', 'step_fun',
+#                       'start', 'align_to_from')
+#        }
+#    }

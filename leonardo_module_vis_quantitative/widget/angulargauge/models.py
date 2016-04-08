@@ -1,5 +1,4 @@
 
-from random import randint
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -16,9 +15,6 @@ class AngularGaugeWidget(NumericWidget):
         verbose_name=_('Warning threshold'), default=70)
     critical_threshold = models.IntegerField(
         verbose_name=_('Critical threshold'), default=90)
-
-    def get_data(self, **kwargs):
-        return {'value': randint(0, 100)}
 
     class Meta:
         abstract = True

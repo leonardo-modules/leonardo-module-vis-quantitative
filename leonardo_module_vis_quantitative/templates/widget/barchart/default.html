@@ -1,47 +1,18 @@
 {% extends widget.get_base_template %}
+{% load static from staticfiles %}
 
 {% block content %}
 <div id="barchart_{{ widget.fe_identifier }}"><svg></svg></div>
-
 <script type="text/javascript">
-
-function set_barchart_{{ widget.id }}_height() {
-  var containerHeight = $("#{{ widget.fe_identifier }}").height(),
-      svgHeight = containerHeight < 150 ? 150 : containerHeight;
-  
-  $('#barchart_{{ widget.fe_identifier }} svg').height(svgHeight);
-}
-
-$(document).ready(function() {
-
-  nv.addGraph(function() {
-    var chart = nv.models.multiBarChart()
-      .reduceXTicks(true)
-      .rotateLabels(0)
-      .showControls(false)
-{% if widget.display == 'stack' %}
-      .stacked(true)
-{% endif %}
-      .groupSpacing(0.1)
-  
-    chart.xAxis    
-      .tickFormat(function(d){return d3.time.format('%d-%b')(new Date(d*1000));});
-  
-    chart.yAxis   
-      .tickFormat(d3.format('.0'));
-
-    d3.select('#barchart_{{ widget.fe_identifier }} svg')
-      .datum({% autoescape off %}{{ widget.get_graph_data }}{% endautoescape %})
-      .call(chart);
-
-    nv.utils.windowResize(function() { chart.update() });
-    return chart;
-  });
-
-  set_barchart_{{ widget.id }}_height();
-  $( window ).resize(set_barchart_{{ widget.id }}_height);
-
-});  
-
+  $(function(){
+    loadResource({src:'{% static "vis/js/charts/barchart.js" %}',callback: function(){
+      leonardo.charts.barchart.create({
+        chartSelector:"#barchart_{{ widget.fe_identifier }} svg",
+        containerSelector:"#{{ widget.fe_identifier }}",
+        url: "/data/data/",
+        requestData:{widget_id:$("#barchart_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
+        updateInterval:{{ widget.refresh_interval }} * 1000});
+    }});
+  }); 
 </script>
-{% endblock %}        
+{% endblock %}

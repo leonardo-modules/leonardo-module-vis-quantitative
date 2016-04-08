@@ -1,5 +1,4 @@
 
-import json
 import traceback
 from django.conf import settings
 from django.http import HttpResponseForbidden, JsonResponse
@@ -58,15 +57,31 @@ class WidgetDataView(View):
 
         try:
 
-            kw = self.attrs.get('kwargs', {})
-            kw.update({'request': self.request})
-            data = method(**kw)
+            cache_key = '.'.join([
+                widget.cache_data_key,
+                method_name
+            ])
+
+            data = widget.cache.get(cache_key)
+
+            if data is None:
+
+                kw = self.attrs.get('kwargs', {})
+                kw.update({'request': self.request})
+                data = method(**kw)
+
+                widget.cache.set(cache_key,
+                                 data, getattr(widget, 'refresh_interval', 60))
 
         except Exception as e:
+
             response = {'error': str(e)}
+
             if settings.DEBUG:
                 response['traceback'] = traceback.format_exc()
+
             return JsonResponse(response)
+
         else:
             return JsonResponse({'data': data, 'id': id})
 

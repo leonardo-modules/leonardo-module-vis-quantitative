@@ -12,6 +12,7 @@ LEONARDO_JS_FILES = [
     'vis/js/angular_gauge_area.js',
     'vis/js/angular_gauge_pointer.js',
     'vis/js/concentric_gauge_area.js',
+    'vis/js/charts/chart.js',
     'vendor/js/d3pie.js',
     'vendor/js/nvd3.js',
     'vendor/js/cubism.js'

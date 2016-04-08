@@ -1,55 +1,20 @@
 {% extends widget.get_base_template %}
-
+{% load static from staticfiles %}
 {% block content %}
 <div id="areachart_{{ widget.fe_identifier }}"><svg></svg></div>
 
 <script type="text/javascript">
-
-function set_areachart_{{ widget.id }}_height() {
-  var containerHeight = $("#{{ widget.fe_identifier }}").height(),
-      svgHeight = containerHeight < 150 ? 150 : containerHeight;
-  
-  $('#areachart_{{ widget.fe_identifier }} svg').height(svgHeight);
-}
-
-$(document).ready(function() {
-
-  nv.addGraph(function() {
-    var chart = nv.models.stackedAreaChart()
-                  .showLegend(true)      
-                  .showYAxis(true)       
-                  .showXAxis(true)
-                  .interpolate("{{ widget.interpolation }}")
-                  .showControls(false)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
-                  .clipEdge(true);
-  
-    chart.xAxis    
-//        .tickFormat(d3.format(',r'));
-        .tickFormat(function(d){return d3.time.format('%d-%b')(new Date(d*1000));});
-  
-    chart.yAxis   
-        .tickFormat(d3.format('.04f'));
-
-    chart.style('{{ widget.display }}');
-
-    {% autoescape off %} 
-    var myData = {{ widget.get_graph_data }};
-    {% endautoescape %}
-   //sinAndCos(); 
-  
-    d3.select('#areachart_{{ widget.fe_identifier }} svg')
-        .datum(myData)    
-        .call(chart);     
- 
-    //Update the chart when window resizes.
-    nv.utils.windowResize(function() { chart.update() });
-    return chart;
-  });
-
-  set_areachart_{{ widget.id }}_height();
-  $( window ).resize(set_areachart_{{ widget.id }}_height);
-
-});  
-
+$(function(){
+    loadResource({src:'{% static "vis/js/charts/areachart.js" %}',callback: function(){
+      leonardo.charts.areachart.create({
+        chartSelector:"#areachart_{{ widget.fe_identifier }} svg",
+        containerSelector:"#{{ widget.fe_identifier }}",
+        url: "/data/data/",
+        requestData:{widget_id:$("#areachart_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
+        updateInterval:{{ widget.refresh_interval }} * 1000,
+        interpolation:"{{ widget.interpolation }}",
+        style:"{{ widget.display }}"});
+    }});
+});
 </script>
 {% endblock %}        
