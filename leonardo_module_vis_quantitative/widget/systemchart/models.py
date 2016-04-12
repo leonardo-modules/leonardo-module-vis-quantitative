@@ -14,3 +14,11 @@ class SystemChartWidget(NumericWidget):
         abstract = True
         verbose_name = _("System chart")
         verbose_name_plural = _("System charts")
+
+    def get_charts(self):
+        metrics = self.get_metrics()
+        charts = []
+        for metric in metrics:
+        	if 'type' in metric:
+        		charts.append(metric)
+        return charts

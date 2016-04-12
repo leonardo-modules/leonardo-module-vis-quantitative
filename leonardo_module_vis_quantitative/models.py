@@ -170,10 +170,13 @@ class TemporalDataWidget(Widget):
                     'unit': line[1],
                     'name': line[2]
                 }
-                if len(line) > 5:
+                if len(line) > 6:
                     final_line['type'] = line[3]
                     final_line['x'] = line[4]
                     final_line['y'] = line[5]
+                    final_line['scale'] = line[6]
+                    if len(line) > 7:
+                        final_line['horizon'] = line[7]
                 ret.append(final_line)
         return ret
 
