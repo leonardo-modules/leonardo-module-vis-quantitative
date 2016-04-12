@@ -35,6 +35,7 @@ LEONARDO_WIDGETS = [
     'leonardo_module_vis_quantitative.widget.donutchart.models.DonutChartWidget',
     'leonardo_module_vis_quantitative.widget.horizonchart.models.HorizonChartWidget',
     'leonardo_module_vis_quantitative.widget.linechart.models.LineChartWidget',
+    'leonardo_module_vis_quantitative.widget.systemchart.models.SystemChartWidget',
 ]
 
 
