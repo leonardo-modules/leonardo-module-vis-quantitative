@@ -106,9 +106,9 @@ class TemporalDataWidget(Widget):
     @cached_property
     def refresh_interval(self):
         '''returns interval in seconds'''
-        return datetime.timedelta(**{
+        return int(datetime.timedelta(**{
             self.step_unit + 's': self.step_length
-        }).total_seconds()
+        }).total_seconds())
 
     def get_step_delta(self):
         return str(datetime.timedelta(**{
