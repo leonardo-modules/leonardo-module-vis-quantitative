@@ -9,9 +9,9 @@ default_app_config = 'leonardo_module_vis_quantitative.Config'
 LEONARDO_OPTGROUP = 'Quantitative Visualizations'
 
 LEONARDO_JS_FILES = [
-    'vis/js/angular_gauge_area.js',
-    'vis/js/angular_gauge_pointer.js',
-    'vis/js/concentric_gauge_area.js',
+#    'vis/js/angular_gauge_area.js',
+#    'vis/js/angular_gauge_pointer.js',
+#    'vis/js/concentric_gauge_area.js',
     'vis/js/charts/chart.js',
     'vendor/js/d3pie.js',
     'vendor/js/nvd3.js',
@@ -36,6 +36,7 @@ LEONARDO_WIDGETS = [
     'leonardo_module_vis_quantitative.widget.horizonchart.models.HorizonChartWidget',
     'leonardo_module_vis_quantitative.widget.linechart.models.LineChartWidget',
     'leonardo_module_vis_quantitative.widget.systemchart.models.SystemChartWidget',
+    'leonardo_module_vis_quantitative.widget.timetable.models.TimeTableWidget',
 ]
 
 

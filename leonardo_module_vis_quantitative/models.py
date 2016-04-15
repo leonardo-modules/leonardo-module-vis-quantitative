@@ -1,5 +1,6 @@
 # -*- coding:/ utf-8 -*-
 import datetime
+import math
 import json
 from math import floor
 from random import randint
@@ -146,7 +147,7 @@ class TemporalDataWidget(Widget):
             request = requests.get(url, params=params)
             json_dict = json.loads(request.text)
             values = []
-            for item in json_dict[0]['datapoints']:
+            for item in json_dict[0]['datapoints'][:-1]:
                 values.append({
                     'x': item[1],
                     'y': item[0],
@@ -157,6 +158,12 @@ class TemporalDataWidget(Widget):
             }
             data.append(datum)
 
+        return data
+
+    def get_update_graphite_data(self, row=None, **kwargs):
+        data = self.get_graphite_data(row, **kwargs)
+        for datum in data:
+            datum['values'] = [datum['values'][-1],]
         return data
 
     def get_metrics(self, row=None):
@@ -246,18 +253,20 @@ class TimeSeriesWidget(TemporalDataWidget):
             self.duration_unit + 's': self.duration_length
         }).total_seconds()
 
+    def get_step_count(self):
+        return int(self.get_duration_delta() / int(self.get_step_delta()))
+
     def get_dummy_data(self, **kwargs):
         return [{
                 'key': 'dummy',
                 'values': [{'x': time(), 'y': randint(0, 100)}
-                           for i in range(0, 100)]
+                           for i in range(0, self.get_step_count())]
                 }]
 
     def get_update_dummy_data(self, **kwargs):
         return [{
                 'key': 'dummy',
-                'values': [{'x': time(), 'y': randint(0, 100)}
-                           for i in range(0, self.step_length)]
+                'values': [{'x': time(), 'y': randint(0, 100)}]
                 }]
 
     class Meta:

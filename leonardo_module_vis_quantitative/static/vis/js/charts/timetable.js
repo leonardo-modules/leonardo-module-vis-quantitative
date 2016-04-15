@@ -10,12 +10,28 @@ var leonardo = function(leonardo) {
         
         var self = this;
 
+        this.format_x_axis = function(d) {
+            return d3.time.format('%d-%b')(new Date(d*1000));
+        }
+
+        this.format_y_axis = function(d) {
+            return d
+        }
+
         this.render = function(chartSelector) {
             var data = self.instances[chartSelector].data;
             $(chartSelector).html(data);
-// col 1            function(d){return d3.time.format('%d-%b')(new Date(d*1000));});
-// col per time series           d3.format('.04f');
+            console.log(data);
+            console.log(chartSelector);
+            final_data = {};
+//            for datum in data.values {
+//                final_data[data.values[datum.x]] = {
+//                    'value': self.format_x_axis(datum.x)
+//                    'date': self.format_x_axis(datum.x)
+//                }
+//            }
         };
+
         this.init = function(config) {
             self.render(config.chartSelector);
         };

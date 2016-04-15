@@ -1,17 +1,19 @@
 {% extends widget.get_base_template %}
 {% load static from staticfiles %}
 {% block content %}
+Time-table {{ widget.fe_identifier }} - every {{ widget.refresh_interval }}s
 <div id="timetable_{{ widget.fe_identifier }}"></div>
-
+{{ widget.get_step_count }}
 <script type="text/javascript">
 $(function(){
-loadResource({src:'{% static "vis/js/charts/timetable.js" %}',callback: function(){
-  leonardo.charts.timetable.create({
-    chartSelector:"#timetable__{{ widget.fe_identifier }}",
-    containerSelector:"#{{ widget.fe_identifier }}",
-    url: "/data/data/",
-    requestData:{widget_id:$("#timetable_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
-    updateInterval:{{ widget.refresh_interval }} * 1000,
+  loadResource({src:'{% static "vis/js/charts/timetable.js" %}',callback: function(){
+    leonardo.charts.timetable.create({
+      chartSelector:"#timetable_{{ widget.fe_identifier }}",
+      containerSelector:"#{{ widget.fe_identifier }}",
+      url: "/vis-quantitative-data/time-series/",
+      requestData:{widget_id:$("#timetable_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
+      updateInterval:{{ widget.refresh_interval }} * 1000
+    });
   }});
 });
 </script>
