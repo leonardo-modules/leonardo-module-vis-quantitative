@@ -130,7 +130,7 @@ class TemporalDataWidget(Widget):
         url = "%s/render" % self.data.get_host()
         data = []
 
-        for metric in target or self.get_metrics():
+        for metric in [target] if target else self.get_metrics():
             target = 'summarize({}, "{}s", "{}")'.format(
                 metric["target"],
                 self.get_step_delta(),
