@@ -246,14 +246,14 @@ class TimeSeriesWidget(TemporalDataWidget):
             self.duration_unit + 's': self.duration_length
         }).total_seconds()
 
-    def get_dummy_data(self, target=None, **kwargs):
+    def get_dummy_data(self, **kwargs):
         return [{
-                'key': target or 'dummy',
+                'key': 'dummy',
                 'values': [{'x': time(), 'y': randint(0, 100)}
                            for i in range(0, 100)]
                 }]
 
-    def get_update_dummy_data(self):
+    def get_update_dummy_data(self, **kwargs):
         return [{
                 'key': 'dummy',
                 'values': [{'x': time(), 'y': randint(0, 100)}
@@ -269,7 +269,7 @@ class NumericWidget(TemporalDataWidget):
     NumericValue widget mixin.
     """
 
-    def get_dummy_data(self):
+    def get_dummy_data(self, **kwargs):
         return [{'value': randint(0, 100)}]
 
     def get_graphite_data(self, **kwargs):
