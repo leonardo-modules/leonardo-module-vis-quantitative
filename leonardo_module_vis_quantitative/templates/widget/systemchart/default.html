@@ -1,5 +1,7 @@
 {% extends widget.get_base_template %}
 {% load static from staticfiles %}
+{% load jsonify %}
+
 {% block content %}
 <div class="systemchart overlayContainer" id="systemchart_{{ widget.fe_identifier }}">
     <img class="svgFill" src="{{ widget.background.url  }}"/>
@@ -8,26 +10,24 @@
             <script type="text/javascript">
                 $(function() {
                 loadResource({src:'{% static "vis/js/charts/gauge.js" %}',callback: function(){
-                      leonardo.charts.createChart("{{ chart.type }}",$.extend({},{
-                        chartSelector:"#{{ chart.type }}_{{ forloop.counter0 }}",
-                        containerSelector:"#{{ chart.type }}Container_{{ forloop.counter0 }}",
+                      leonardo.charts.createChart("{{ chart.chart }}",$.extend({},{
+                        chartSelector:"#{{ chart.chart }}_{{ forloop.counter0 }}",
+                        containerSelector:"#{{ chart.chart }}Container_{{ forloop.counter0 }}",
                         url: "/data/data/",
                         requestData:
                             {widget_id:$("#systemchart_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id'),
                              kwargs:JSON.stringify({row: {{ forloop.counter0 }}})},
                         updateInterval:{{ widget.refresh_interval }} * 1000,
-                        scale:0.5
-                        },{}));
+                        },JSON.parse('{{ chart.chart_config|jsonify }}')));
                     }});
-                var $systemchart = $("#systemchart_{{ widget.fe_identifier }}"),$chartContainer=$("#{{ chart.type }}Container_{{ forloop.counter0 }}"), chartX={{ chart.x }}, chartY={{ chart.y }};
+                var $systemchart = $("#systemchart_{{ widget.fe_identifier }}"),$chartContainer=$("#{{ chart.chart }}Container_{{ forloop.counter0 }}"), chartX={{ chart.x }}, chartY={{ chart.y }};
                 $chartContainer.css("position","absolute");
                 $chartContainer.css("top",($systemchart.height()*chartX) - ($chartContainer.height()/2));
                 $chartContainer.css("left",($systemchart.width()*chartY)- ($chartContainer.width()/2));
-
                 });
             </script>
-            <div id="{{ chart.type }}Container_{{ forloop.counter0 }}" class="col-xs-2 row-sm-4">
-                <div id="{{ chart.type }}_{{ forloop.counter0 }}"></div>
+            <div id="{{ chart.chart }}Container_{{ forloop.counter0 }}" class="col-xs-2 row-sm-4">
+                <div id="{{ chart.chart }}_{{ forloop.counter0 }}"></div>
             </div>
         {% endfor %}
     </div>

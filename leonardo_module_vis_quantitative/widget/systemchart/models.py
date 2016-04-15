@@ -23,6 +23,18 @@ class SystemChartWidget(NumericWidget):
         metrics = self.get_metrics()
         charts = []
         for metric in metrics:
-            if 'type' in metric:
-                charts.append(metric)
+            charts.append(self.create_chart_from_metric(metric))
         return charts
+
+    def create_chart_from_metric(self,metric):
+        if 'type' in metric and metric["type"] =='gauge':
+            return {
+                "chart": metric["type"],
+                "x":metric["x"],
+                "y":metric["y"],
+                "chart_config": {
+                    "label": metric["name"],
+                    "max": metric["horizon"],
+                    "scale":metric["scale"]
+                    }
+                }

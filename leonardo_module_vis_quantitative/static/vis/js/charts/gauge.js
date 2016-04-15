@@ -28,8 +28,8 @@ var leonardo = function(leonardo) {
             config.placeholder = config.chartSelector;
             config.width=$(config.containerSelector).width();
             config.size=config.width;
-            if(config.scale && config.scale >=0){
-                config.size*config.size*config.scale;
+            if(config.scale && parseFloat(config.scale) >=0){
+                config.size=config.size*parseFloat(config.scale);
             }
             if(data || data === 0){
                 config.data=data;
