@@ -179,6 +179,8 @@ class TemporalDataWidget(Widget):
                         if len(line) > 7:
                             final_line['horizon'] = line[7]
                     ret.append(final_line)
+                    if target and target == line[0]:
+                        break
         return ret
 
     def get_data(self, request, **kwargs):
