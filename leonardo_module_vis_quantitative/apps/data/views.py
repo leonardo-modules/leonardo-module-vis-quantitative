@@ -1,4 +1,5 @@
 
+import json
 import traceback
 from django.conf import settings
 from django.http import HttpResponseForbidden, JsonResponse
@@ -66,7 +67,7 @@ class WidgetDataView(View):
 
             if data is None:
 
-                kw = self.attrs.get('kwargs', {})
+                kw = json.loads(self.attrs.get('kwargs', ""))
                 kw.update({'request': self.request})
                 data = method(**kw)
 

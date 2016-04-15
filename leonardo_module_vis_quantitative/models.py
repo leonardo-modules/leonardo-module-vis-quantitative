@@ -162,7 +162,7 @@ class TemporalDataWidget(Widget):
     def get_metrics(self, row=None):
         metrics = self.data.metrics.split("\n")
         ret = []
-        for metric in [metrics[row]] if row else metrics:
+        for metric in [metrics[int(row)]] if row else metrics:
             if metric.strip('\n').strip('\r') != '':
                 line = metric.strip('\n').strip('\r').split('|')
                 final_line = {

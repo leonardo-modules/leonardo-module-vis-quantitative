@@ -14,7 +14,7 @@
                         url: "/data/data/",
                         requestData:
                             {widget_id:$("#systemchart_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id'),
-                             kwargs:{target: "{{ chart.target }}"}},
+                             kwargs:JSON.stringify({row: {{ forloop.counter0 }}})},
                         updateInterval:{{ widget.refresh_interval }} * 1000,
                         scale:0.5
                         },{}));
