@@ -67,7 +67,7 @@ class WidgetDataView(View):
 
             if data is None:
 
-                kw = json.loads(self.attrs.get('kwargs', ""))
+                kw = json.loads(self.attrs.get('kwargs', "{}"))
                 kw.update({'request': self.request})
                 data = method(**kw)
 

@@ -20,8 +20,9 @@
                         },{}));
                     }});
                 var $systemchart = $("#systemchart_{{ widget.fe_identifier }}"),$chartContainer=$("#{{ chart.type }}Container_{{ forloop.counter0 }}"), chartX={{ chart.x }}, chartY={{ chart.y }};
-                $chartContainer.css("top",($systemchart.width()*chartX) - $chartContainer.width()/2);
-                $chartContainer.css("left",($systemchart.height()*chartY)- $chartContainer.height()/2);
+                $chartContainer.css("position","absolute");
+                $chartContainer.css("top",($systemchart.height()*chartX) - ($chartContainer.height()/2));
+                $chartContainer.css("left",($systemchart.width()*chartY)- ($chartContainer.width()/2));
 
                 });
             </script>
