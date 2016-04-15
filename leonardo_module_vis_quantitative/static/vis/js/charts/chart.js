@@ -96,5 +96,16 @@ Chart.prototype =  {
     },
     getChart: function(chartSelector){
       return this.instances[chartSelector];
-    }
+    },
 };
+var leonardo = function(leonardo) {
+    leonardo.charts = leonardo.charts || {};
+    leonardo.charts.createChart = function(chartName,config){
+      if(typeof leonardo.charts[chartName] == 'object'){
+        leonardo.charts[chartName].create(config);
+      }else{
+        console.log("Cannot create chart, chart with name "+chartName+" not exists!");
+      }
+    }
+    return leonardo;
+}(leonardo || {});

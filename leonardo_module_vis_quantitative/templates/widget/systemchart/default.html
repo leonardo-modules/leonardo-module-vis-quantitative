@@ -1,10 +1,36 @@
 {% extends widget.get_base_template %}
-
+{% load static from staticfiles %}
 {% block content %}
-<div class="systemchart" id="systemchart_{{ widget.fe_identifier }}"><svg></svg></div>
-<script type="text/javascript">
-$(document).ready(function() {
+<div class="systemchart overlayContainer" id="systemchart_{{ widget.fe_identifier }}">
+    <img class="svgFill" src="{{ widget.background.url  }}"/>
+    <div id="SystemChartOverlay" class="overlay">
+        {% for chart in widget.get_charts %}
+            <script type="text/javascript">
+                $(function() {
+                loadResource({src:'{% static "vis/js/charts/gauge.js" %}',callback: function(){
+                      leonardo.charts.createChart("{{ chart.type }}",$.extend({},{
+                        chartSelector:"#{{ chart.type }}_{{ forloop.counter0 }}",
+                        containerSelector:"#{{ chart.type }}Container_{{ forloop.counter0 }}",
+                        url: "/data/data/",
+                        requestData:
+                            {widget_id:$("#systemchart_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id'),
+                             kwargs:{target: "{{ chart.target }}"}},
+                        updateInterval:{{ widget.refresh_interval }} * 1000,
+                        scale:0.5
+                        },{}));
+                    }});
+                var $systemchart = $("#systemchart_{{ widget.fe_identifier }}"),$chartContainer=$("#{{ chart.type }}Container_{{ forloop.counter0 }}"), chartX={{ chart.x }}, chartY={{ chart.y }};
+                $chartContainer.css("top",($systemchart.width()*chartX) - $chartContainer.width()/2);
+                $chartContainer.css("left",($systemchart.height()*chartY)- $chartContainer.height()/2);
 
-});
-</script>
+                });
+            </script>
+            <div id="{{ chart.type }}Container_{{ forloop.counter0 }}" class="col-xs-2 row-sm-4">
+                <div id="{{ chart.type }}_{{ forloop.counter0 }}"></div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+Debug:
+{{ widget.get_charts }}
 {% endblock %}
