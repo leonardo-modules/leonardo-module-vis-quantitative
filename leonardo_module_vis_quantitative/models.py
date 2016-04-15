@@ -126,11 +126,11 @@ class TemporalDataWidget(Widget):
             return 's'
         return '?'
 
-    def get_graphite_data(self, **kwargs):
+    def get_graphite_data(self, target=None, **kwargs):
         url = "%s/render" % self.data.get_host()
         data = []
 
-        for metric in self.get_metrics():
+        for metric in target or self.get_metrics():
             target = 'summarize({}, "{}s", "{}")'.format(
                 metric["target"],
                 self.get_step_delta(),
@@ -185,7 +185,7 @@ class TemporalDataWidget(Widget):
         method must accepts ``kwargs`` where the request is
         and other kwargs which are used for advance cases
         '''
-        return self.get_graph_data()
+        return self.get_graph_data(**kwargs)
 
     def get_update_data(self, request, **kwargs):
         '''Returns part of widget data in array or dictionary
@@ -200,15 +200,15 @@ class TemporalDataWidget(Widget):
         if self.data is not None:
             return getattr(self,
                            'get_update_%s_data' % self.data.data_source.type,
-                           self.get_graph_data)()
+                           self.get_graph_data)(**kwargs)
 
-    def get_graph_data(self):
+    def get_graph_data(self, **kwargs):
         '''returns data by source type
         '''
         if self.data is not None:
             return getattr(self,
                            'get_%s_data' % self.data.data_source.type
-                           )()
+                           )(**kwargs)
 
     @cached_property
     def cache_data_key(self):
@@ -246,9 +246,9 @@ class TimeSeriesWidget(TemporalDataWidget):
             self.duration_unit + 's': self.duration_length
         }).total_seconds()
 
-    def get_dummy_data(self):
+    def get_dummy_data(self, target=None, **kwargs):
         return [{
-                'key': 'dummy',
+                'key': target or 'dummy',
                 'values': [{'x': time(), 'y': randint(0, 100)}
                            for i in range(0, 100)]
                 }]
