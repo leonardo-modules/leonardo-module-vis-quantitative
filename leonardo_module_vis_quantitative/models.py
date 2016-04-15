@@ -130,7 +130,7 @@ class TemporalDataWidget(Widget):
         url = "%s/render" % self.data.get_host()
         data = []
 
-        for metric in [target] if target else self.get_metrics():
+        for metric in self.get_metrics(target=target):
             target = 'summarize({}, "{}s", "{}")'.format(
                 metric["target"],
                 self.get_step_delta(),
@@ -159,25 +159,26 @@ class TemporalDataWidget(Widget):
 
         return data
 
-    def get_metrics(self):
+    def get_metrics(self, target=None):
         metrics = self.data.metrics.split("\n")
         ret = []
         for metric in metrics:
             if metric.strip('\n').strip('\r') != '':
                 line = metric.strip('\n').strip('\r').split('|')
-                final_line = {
-                    'target': line[0],
-                    'unit': line[1],
-                    'name': line[2]
-                }
-                if len(line) > 6:
-                    final_line['type'] = line[3]
-                    final_line['x'] = line[4]
-                    final_line['y'] = line[5]
-                    final_line['scale'] = line[6]
-                    if len(line) > 7:
-                        final_line['horizon'] = line[7]
-                ret.append(final_line)
+                if (target and target == line[0]) or not target:
+                    final_line = {
+                        'target': line[0],
+                        'unit': line[1],
+                        'name': line[2]
+                    }
+                    if len(line) > 6:
+                        final_line['type'] = line[3]
+                        final_line['x'] = line[4]
+                        final_line['y'] = line[5]
+                        final_line['scale'] = line[6]
+                        if len(line) > 7:
+                            final_line['horizon'] = line[7]
+                    ret.append(final_line)
         return ret
 
     def get_data(self, request, **kwargs):
@@ -272,12 +273,12 @@ class NumericWidget(TemporalDataWidget):
     def get_dummy_data(self, **kwargs):
         return [{'value': randint(0, 100)}]
 
-    def get_graphite_data(self, **kwargs):
+    def get_graphite_data(self, target=None, **kwargs):
         url = "%s/render" % self.data.get_host()
 
         data = []
 
-        for metric in self.get_metrics():
+        for metric in self.get_metrics(target=target):
             target = 'summarize({}, "{}s", "{}")'.format(
                 metric["target"],
                 self.get_step_delta(), self.step_fun)
