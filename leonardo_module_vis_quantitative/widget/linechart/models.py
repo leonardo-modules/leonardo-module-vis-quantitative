@@ -1,10 +1,6 @@
 
-import time
-import json
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from leonardo_module_vis_quantitative.models import TimeSeriesWidget
 
 INTERPOLATION_CHOICES = (

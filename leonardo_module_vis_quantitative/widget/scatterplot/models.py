@@ -5,6 +5,7 @@ from django.db import models
 
 from leonardo_module_vis_quantitative.models import NumericWidget
 
+
 class ScatterPlotWidget(NumericWidget):
     """
     Widget which shows time series in scatter plot.

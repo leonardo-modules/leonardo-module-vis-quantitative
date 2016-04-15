@@ -6,11 +6,13 @@ from django.db import models
 
 from leonardo_module_vis_quantitative.models import NumericWidget
 
+
 class SystemChartWidget(NumericWidget):
     """
     Widget which shows number widget in system chart on vector image underlay.
     """
-    background = models.ForeignKey(Vector, related_name="%(app_label)s_%(class)s_related")
+    background = models.ForeignKey(
+        Vector, related_name="%(app_label)s_%(class)s_related")
 
     class Meta:
         abstract = True
@@ -21,6 +23,6 @@ class SystemChartWidget(NumericWidget):
         metrics = self.get_metrics()
         charts = []
         for metric in metrics:
-        	if 'type' in metric:
-        		charts.append(metric)
+            if 'type' in metric:
+                charts.append(metric)
         return charts

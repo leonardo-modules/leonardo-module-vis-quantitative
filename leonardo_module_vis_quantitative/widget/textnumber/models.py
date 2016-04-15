@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from leonardo_module_vis_quantitative.models import NumericWidget
 
+
 class TextNumberWidget(NumericWidget):
     """
     Widget which shows number in text format.
