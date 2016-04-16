@@ -20,16 +20,8 @@ var leonardo = function(leonardo) {
 
         this.render = function(chartSelector) {
             var data = self.instances[chartSelector].data;
-            //$(chartSelector).html(data);
+            $(chartSelector).prepend("<p>Data:" + JSON.stringify(data[0].values)+"</p><hr>");
             console.log(data);
-            console.log(chartSelector);
-            final_data = {};
-//            for datum in data.values {
-//                final_data[data.values[datum.x]] = {
-//                    'value': self.format_x_axis(datum.x)
-//                    'date': self.format_x_axis(datum.x)
-//                }
-//            }
         };
 
         this.init = function(config) {
