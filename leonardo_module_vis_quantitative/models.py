@@ -11,6 +11,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from leonardo.module.web.models import Widget
+from leonardo.module.web.widget.application.reverse import app_reverse
 from yamlfield.fields import YAMLField
 
 SOURCE_TYPES = (
@@ -111,9 +112,16 @@ class TemporalDataWidget(Widget):
             self.step_unit + 's': self.step_length
         }).total_seconds())
 
-    @property
+    @cached_property
     def get_data_url(self):
-        return "/vis-quantitative-data/time-series/"
+        try:
+            url = app_reverse(
+                'vislab_data', 'leonardo_module_vis_quantitative.apps.data')
+        except:
+            raise Exception('We cannot find the url for data,'
+                            'have you a app mapped on some url :')
+        else:
+            return url
 
     def get_step_delta(self):
         return str(datetime.timedelta(**{
@@ -167,7 +175,7 @@ class TemporalDataWidget(Widget):
     def get_update_graphite_data(self, row=None, **kwargs):
         data = self.get_graphite_data(row, **kwargs)
         for datum in data:
-            datum['values'] = [datum['values'][-1],]
+            datum['values'] = [datum['values'][-1], ]
         return data
 
     def get_metrics(self, row=None):
