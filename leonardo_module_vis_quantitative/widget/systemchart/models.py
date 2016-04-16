@@ -36,5 +36,16 @@ class SystemChartWidget(NumericWidget):
                     "label": metric["name"],
                     "max": metric["horizon"],
                     "scale":metric["scale"]
-                    }
                 }
+            }
+        elif 'type' in metric and metric["type"] =='number':
+            return {
+                "chart": metric["type"],
+                "x":metric["x"],
+                "y":metric["y"],
+                "chart_config": {
+                    "label": metric["name"],
+                    "scale":metric["scale"]
+                }
+            }
+

@@ -10,7 +10,7 @@
       leonardo.charts.linechart.create({
         chartSelector:"#line_chart_{{ widget.fe_identifier }} svg",
         containerSelector:"#{{ widget.fe_identifier }}",
-        url: "/data/data/",
+        url: "{{ widget.get_data_url }}",
         requestData:{widget_id:$("#line_chart_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
         updateInterval:{{ widget.refresh_interval }} * 1000,
         interpolation:"{{ widget.interpolation }}"});

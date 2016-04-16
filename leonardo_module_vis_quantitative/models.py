@@ -111,6 +111,10 @@ class TemporalDataWidget(Widget):
             self.step_unit + 's': self.step_length
         }).total_seconds())
 
+    @property
+    def get_data_url(self):
+        return "/vis-quantitative-data/time-series/"
+
     def get_step_delta(self):
         return str(datetime.timedelta(**{
             self.step_unit + 's': self.step_length
@@ -334,6 +338,9 @@ class NumericWidget(TemporalDataWidget):
                     })
 
         return data
+
+    def get_update_graphite_data(self, row=None, **kwargs):
+        return self.get_graphite_data(row, **kwargs)
 
     class Meta:
         abstract = True

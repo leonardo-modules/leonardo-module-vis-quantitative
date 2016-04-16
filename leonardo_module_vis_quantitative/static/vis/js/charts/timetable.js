@@ -20,7 +20,7 @@ var leonardo = function(leonardo) {
 
         this.render = function(chartSelector) {
             var data = self.instances[chartSelector].data;
-            $(chartSelector).html(data);
+            //$(chartSelector).html(data);
             console.log(data);
             console.log(chartSelector);
             final_data = {};
