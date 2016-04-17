@@ -58,10 +58,12 @@ class WidgetDataView(View):
 
         try:
 
+            kw = json.loads(self.attrs.get('kwargs', "{}"))
+
             cache_key = '.'.join([
                 widget.cache_data_key,
-                method_name
-            ])
+                method_name,
+            ] + ['%s-%s' % (v[0], v[1]) for v in kw.items()])
 
             data = widget.cache.get(cache_key)
 
