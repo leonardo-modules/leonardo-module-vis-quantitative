@@ -11,7 +11,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from leonardo.module.web.models import Widget
-from leonardo.module.web.widget.application.reverse import app_reverse
+from django.core.urlresolvers import reverse_lazy
 from yamlfield.fields import YAMLField
 
 SOURCE_TYPES = (
@@ -115,8 +115,7 @@ class TemporalDataWidget(Widget):
     @cached_property
     def get_data_url(self):
         try:
-            url = app_reverse(
-                'vislab_data', 'leonardo_module_vis_quantitative.apps.data')
+            url = reverse_lazy('vislab_data')
         except:
             raise Exception('We cannot find the url for data,'
                             'have you a app mapped on some url :')
