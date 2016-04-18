@@ -5,12 +5,11 @@
 
 {% block content %}
 <div id="vis_{{ widget.fe_identifier }}"></div>
-sdasd
 <script type="text/javascript">
-  $(function(){
-    loadResource({src:'{% static "vis/js/charts/textnumber.js" %}',callback: function(){
-      leonardo.charts.textnumber.create({{ widget.get_chart_params|jsonify }});
-    }});
-  }); 
+$(function(){
+  loadResource({src: '{% static "vis/js/charts/textnumber.js" %}', callback: function(){
+    leonardo.charts.textnumber.create({{ widget.get_chart_params|jsonify }});
+  }});
+});
 </script>
 {% endblock %}

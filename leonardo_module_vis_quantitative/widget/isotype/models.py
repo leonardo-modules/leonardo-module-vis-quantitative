@@ -4,9 +4,9 @@ from django.utils.functional import cached_property
 from leonardo_module_vis_quantitative.models import NumericWidget
 
 
-class DonutChartWidget(NumericWidget):
+class IsotypeWidget(NumericWidget):
     """
-    Widget which shows donut chart.
+    Widget which shows isotype pictogram grid.
     """
 
     @cached_property
@@ -14,7 +14,7 @@ class DonutChartWidget(NumericWidget):
 
         super_data = super(NumericWidget, self).get_chart_params
         data = {
-           'chartSelector': "#vis_%s svg" % self.fe_identifier
+           'chartSelector': "#vis_%s" % self.fe_identifier
         }
         final_data = super_data.copy()
         final_data.update(data)

@@ -16,11 +16,15 @@ Angular Gauge
 Doughnut chart
 --------------
 
-http://d3pie.org/
+- http://d3pie.org/
 
 Time table
 ----------
 
+Isotype
+-------
+
+- Pictogram grid in d3js http://bl.ocks.org/alansmithy/d832fc03f6e6a91e99f4
 
 
 Metric dissected
