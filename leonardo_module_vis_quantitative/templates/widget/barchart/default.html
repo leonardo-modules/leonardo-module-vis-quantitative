@@ -1,17 +1,14 @@
 {% extends widget.get_base_template %}
+
 {% load static from staticfiles %}
+{% load jsonify %}
 
 {% block content %}
-<div id="barchart_{{ widget.fe_identifier }}"><svg></svg></div>
+<div id="vis_{{ widget.fe_identifier }}"><svg></svg></div>
 <script type="text/javascript">
   $(function(){
-    loadResource({src:'{% static "vis/js/charts/barchart.js" %}',callback: function(){
-      leonardo.charts.barchart.create({
-        chartSelector:"#barchart_{{ widget.fe_identifier }} svg",
-        containerSelector:"#{{ widget.fe_identifier }}",
-        url: "/data/data/",
-        requestData:{widget_id:$("#barchart_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
-        updateInterval:{{ widget.refresh_interval }} * 1000});
+    loadResource({src: '{% static "vis/js/charts/barchart.js" %}', callback: function(){
+      leonardo.charts.barchart.create({{ widget.get_chart_params|jsonify }});
     }});
   }); 
 </script>

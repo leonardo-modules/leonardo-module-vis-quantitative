@@ -22,5 +22,5 @@ class DonutChartWidget(NumericWidget):
 
     class Meta:
         abstract = True
-        verbose_name = _("Doughnut chart")
-        verbose_name_plural = _("Doughnut charts")
+        verbose_name = _("Isotype")
+        verbose_name_plural = _("Isotypes")

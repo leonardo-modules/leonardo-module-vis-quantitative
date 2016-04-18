@@ -1,10 +1,16 @@
 {% extends widget.get_base_template %}
 
-{% block content %}
-<div class="textnumber" id="textnumber_{{ widget.fe_identifier }}"><svg></svg></div>
-<script type="text/javascript">
-$(document).ready(function() {
+{% load static from staticfiles %}
+{% load jsonify %}
 
-});
+{% block content %}
+<div id="vis_{{ widget.fe_identifier }}"></div>
+sdasd
+<script type="text/javascript">
+  $(function(){
+    loadResource({src:'{% static "vis/js/charts/textnumber.js" %}',callback: function(){
+      leonardo.charts.textnumber.create({{ widget.get_chart_params|jsonify }});
+    }});
+  }); 
 </script>
 {% endblock %}

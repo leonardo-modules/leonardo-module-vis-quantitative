@@ -177,6 +177,18 @@ class TemporalDataWidget(Widget):
             datum['values'] = [datum['values'][-1], ]
         return data
 
+    @cached_property
+    def get_chart_params(self):
+        return {
+            'chartSelector': "#vis_%s" % self.fe_identifier,
+            'containerSelector':"#%s" % self.fe_identifier,
+            'url': str(self.get_data_url),
+            'requestData':{
+                'widget_id': self.fe_identifier
+            },
+            'updateInterval': self.refresh_interval * 1000
+        }
+
     def get_metrics(self, row=None):
         metrics = self.data.metrics.split("\n")
         ret = []
@@ -288,6 +300,10 @@ class NumericWidget(TemporalDataWidget):
     """
     NumericValue widget mixin.
     """
+#    low_horizon = models.IntegerField(
+#        verbose_name=_('low horizon'), blank=True, null=True)
+#    high_horizon = models.IntegerField(
+#        verbose_name=_('high horizon'), blank=True, null=True)
 
     def get_dummy_data(self, **kwargs):
         return [{'value': randint(0, 100)}]

@@ -1,22 +1,17 @@
 {% extends widget.get_base_template %}
-{% load static from staticfiles %}
-{% block content %}
-<div id="angular_gauge_{{ widget.fe_identifier }}"></div>
 
+{% load static from staticfiles %}
+{% load jsonify %}
+
+{% block content %}
+<div id="vis_{{ widget.fe_identifier }}"></div>
 <script type="text/javascript">
 $(function(){
-    loadResource({src:'{% static "vis/js/charts/gauge.js" %}',callback: function(){
-      leonardo.charts.gauge.create({
-        chartSelector:"#angular_gauge_{{ widget.fe_identifier }}",
-        containerSelector:"#{{ widget.fe_identifier }}",
-        url: "{{ widget.get_data_url }}",
-        requestData:{widget_id:$("#angular_gauge_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id')},
-        updateInterval:{{ widget.refresh_interval }} * 1000,
-        label: 'Angular',
-        data_source: "{{ widget.get_data }}",
-        min:{{ widget.low_horizon|default:"0" }},
-        max:{{ widget.high_horizon|default:"100" }}});
-    }});
+  loadResource({
+    src: '{% static "vis/js/charts/gauge.js" %}', callback: function(){
+      leonardo.charts.gauge.create({{ widget.get_chart_params|jsonify }});
+    }
+  });
 });
 </script>
 {% endblock %}
