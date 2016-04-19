@@ -174,8 +174,10 @@ class TemporalDataWidget(Widget):
     def get_update_graphite_data(self, row=None, **kwargs):
         data = self.get_graphite_data(row, **kwargs)
         for datum in data:
-            datum['values'] = [datum['values'][-1], ]
+            datum['values'] = datum['values'][-1:]
+            print kwargs
             if 'expected_timestamp' in kwargs:
+                datum['method'] = 'update'
                 if kwargs['expected_timestamp'] != datum['values'][0]['x']:
                     datum['offset'] = kwargs['expected_timestamp'] - datum['values'][0]['x']
                     datum['values'][0]['x'] = kwargs['expected_timestamp']

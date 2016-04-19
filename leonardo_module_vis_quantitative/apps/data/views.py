@@ -1,5 +1,6 @@
 
 import json
+import math
 import traceback
 from django.conf import settings
 from django.http import HttpResponseForbidden, JsonResponse
@@ -59,6 +60,9 @@ class WidgetDataView(View):
         try:
 
             kw = json.loads(self.attrs.get('kwargs', "{}"))
+
+            if method_name == 'get_update_data':
+                kw['expected_timestamp'] = math.floor(float(self.attrs.get('expected_timestamp', '0')))
 
             cache_key = '.'.join([
                 widget.cache_data_key,
