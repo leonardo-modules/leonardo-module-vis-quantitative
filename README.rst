@@ -3,10 +3,12 @@
 Leonardo Quantitative Visualizations
 ====================================
 
+
 General chart theory
 ====================
 
 - Battle of the Charts: Why Cartesian Wins Against Radial http://blog.visual.ly/cartesian-vs-radial-charts/
+
 
 Available widgets
 =================
@@ -40,8 +42,17 @@ Liquid fill gauge
 
 Rose chart
 ----------
-<
+
 - Nightingale's Rose + D3.js http://bl.ocks.org/kgryte/5926740
+
+Radial bar chart
+----------------
+
+- Visualisation of domestic energy consumption http://prcweb.co.uk/lab/energy/
+
+Radial progress chart
+---------------------
+
 
 Metric dissected
 ================

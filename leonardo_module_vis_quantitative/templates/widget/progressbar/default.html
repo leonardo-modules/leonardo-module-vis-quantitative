@@ -1,0 +1,15 @@
+{% extends widget.get_base_template %}
+
+{% load static from staticfiles %}
+{% load jsonify %}
+
+{% block content %}
+<div class="isotype" id="vis_{{ widget.fe_identifier }}"></div>
+<script type="text/javascript">
+$(function(){
+  loadResource({src: '{% static "vis/js/charts/progressbar.js" %}', callback: function(){
+    leonardo.charts.progressbar.create({{ widget.get_chart_params|jsonify }});
+  }});
+});
+</script>
+{% endblock %}
