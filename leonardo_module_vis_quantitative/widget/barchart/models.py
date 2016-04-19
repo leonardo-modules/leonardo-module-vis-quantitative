@@ -21,7 +21,7 @@ class BarChartWidget(TimeSeriesWidget):
     @cached_property
     def get_chart_params(self):
 
-        super_data = super(TimeSeriesWidget, self).get_chart_params
+        super_data = super(BarChartWidget, self).get_chart_params
         data = {
            'display': self.display,
            'chartSelector': "#vis_%s svg" % self.fe_identifier

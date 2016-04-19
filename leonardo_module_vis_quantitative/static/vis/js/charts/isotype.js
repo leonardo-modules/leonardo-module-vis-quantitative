@@ -11,16 +11,31 @@ var leonardo = function(leonardo) {
         var self = this;
 
         this.render = function(chartSelector) {
-            var data = self.instances[chartSelector].data;
-            console.log(data);
+            var data = self.getDataValue(chartSelector);
             d3.selectAll("use").attr("class",function(d,i){
-               if (d < data[0].value) {
+               if (d < data) {
                    return "iconSelected";
                }    else    {
                    return "iconPlain";
                }
             });
         };
+
+        this.getDataValue = function(chartSelector){
+            if(self.instances[chartSelector].data){
+                var data=self.instances[chartSelector].data;
+                if(data instanceof Array && data.length ===1 && data[0].hasOwnProperty('value')){
+                    return data[0].value;
+                }else if(typeof data === 'object' && data.hasOwnProperty('value')){
+                    return data.value;
+                }else{
+                    console.log("Invalid data given!");
+                }
+            }else{
+                console.log("Invalid data given!");
+            }
+        };
+
 
         this.init = function(config) {
             //create svg element
@@ -43,12 +58,12 @@ var leonardo = function(leonardo) {
             var numRows = 10;
 
             //padding for the grid
-            var xPadding = 15;
-            var yPadding = 15;
+            var xPadding = 0;
+            var yPadding = 0;
 
             //horizontal and vertical spacing between the icons
-            var hBuffer = 5;
-            var wBuffer = 5;
+            var hBuffer = 10;
+            var wBuffer = 10;
 
             //generate a d3 range for the total number of required elements
             var myIndex=d3.range(numCols*numRows);

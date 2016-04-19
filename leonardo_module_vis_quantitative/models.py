@@ -271,6 +271,31 @@ class TimeSeriesWidget(TemporalDataWidget):
     high_horizon = models.IntegerField(
         verbose_name=_('high horizon'), blank=True, null=True)
 
+    def get_value_format(self):
+        return 0
+
+    def get_time_format(self):
+
+        duration = self.get_duration_delta()
+
+        if duration < 600:
+            time_format = "%e %b"
+        else:
+            time_format = "%H:%M"
+
+        return time_format
+
+    @cached_property
+    def get_chart_params(self):
+
+        super_data = super(TimeSeriesWidget, self).get_chart_params
+        data = {
+           'timeFormat': self.get_time_format()
+        }
+        final_data = super_data.copy()
+        final_data.update(data)
+        return final_data
+
     def get_duration_delta(self):
         return datetime.timedelta(**{
             self.duration_unit + 's': self.duration_length

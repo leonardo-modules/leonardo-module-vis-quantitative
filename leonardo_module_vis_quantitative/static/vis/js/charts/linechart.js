@@ -29,7 +29,7 @@ var leonardo = function(leonardo) {
                               .useInteractiveGuideline(true);
               
                 chart.xAxis    
-                    .tickFormat(function(d){return d3.time.format('%x')(new Date(d*1000));});
+                    .tickFormat(function(d){return d3.time.format(config.timeFormat)(new Date(d*1000));});
               
                 chart.yAxis   
                     .tickFormat(d3.format('.04f'));

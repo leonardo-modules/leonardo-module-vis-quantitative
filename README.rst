@@ -26,6 +26,11 @@ Isotype
 
 - Pictogram grid in d3js http://bl.ocks.org/alansmithy/d832fc03f6e6a91e99f4
 
+Liquid fill gauge
+-----------------
+
+- D3 Liquid Fill Gauge http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6
+
 
 Metric dissected
 ================

@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from leonardo_module_vis_quantitative.models import NumericWidget
 
-
+    
 class AngularGaugeWidget(NumericWidget):
     """
     Widget which shows angular gauge.

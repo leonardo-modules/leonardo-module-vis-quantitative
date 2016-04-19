@@ -22,7 +22,7 @@ class LineChartWidget(TimeSeriesWidget):
     @cached_property
     def get_chart_params(self):
 
-        super_data = super(TimeSeriesWidget, self).get_chart_params
+        super_data = super(LineChartWidget, self).get_chart_params
         data = {
            'interpolation': self.interpolation,
            'chartSelector': "#vis_%s svg" % self.fe_identifier

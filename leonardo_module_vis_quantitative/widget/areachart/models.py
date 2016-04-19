@@ -29,7 +29,7 @@ class AreaChartWidget(TimeSeriesWidget):
     @cached_property
     def get_chart_params(self):
 
-        super_data = super(TimeSeriesWidget, self).get_chart_params
+        super_data = super(AreaChartWidget, self).get_chart_params
         data = {
            'style': self.display,
            'interpolation': self.interpolation,
