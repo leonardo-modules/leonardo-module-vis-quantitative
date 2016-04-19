@@ -12,6 +12,8 @@ function Chart() {
             updateInterval: 2000,
             pushOrReplaceData:"push",
             sliceData:true,
+            sendTimestamps:false,
+            timestampKey:"x"
         };
 }
 Chart.prototype =  {
@@ -53,10 +55,14 @@ Chart.prototype =  {
         });
     },
     updateData: function(chartSelector) {
-        var self=this;
+        var self=this, chart = self.instances[chartSelector], updateParams={method: "get_update_data"};
+        if(chart.config.sendTimestamps && typeof chart.config.timestampKey === 'string'){
+          updateParams.last_timestamp = chart.data[chart.data.length-1][chart.config.timestampKey];
+          updateParams.expected_timestamp = updateParams.last_timestamp + chart.config.updateInterval;
+        }
         return $.ajax({
             type: 'POST',
-            data: $.extend({},self.instances[chartSelector].config.requestData,{method: "get_update_data"}),
+            data: $.extend({},self.instances[chartSelector].config.requestData,updateParams),
             url: self.instances[chartSelector].config.url,
             datatype: 'json'
         });
@@ -101,7 +107,7 @@ Chart.prototype =  {
 var leonardo = function(leonardo) {
     leonardo.charts = leonardo.charts || {};
     leonardo.charts.createChart = function(chartName,config){
-      if(typeof leonardo.charts[chartName] == 'object'){
+      if(typeof leonardo.charts[chartName] === 'object' && typeof leonardo.charts[chartName].create === 'function'){
         leonardo.charts[chartName].create(config);
       }else{
         console.log("Cannot create chart, chart with name "+chartName+" not exists!");
