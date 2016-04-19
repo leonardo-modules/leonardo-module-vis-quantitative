@@ -59,7 +59,7 @@ Chart.prototype =  {
         if(chart.config.sendTimestamps && typeof chart.config.timestampKey === 'string'){
           if(chart.data.length>0){
             updateParams.last_timestamp = chart.data[0].values[chart.data[0].values.length-1][chart.config.timestampKey];
-            updateParams.expected_timestamp = updateParams.last_timestamp + chart.config.updateInterval;
+            updateParams.expected_timestamp = updateParams.last_timestamp + chart.config.updateInterval/1000;
           }else{
             console.log("Cannot send timestamps with update request, actual data is empty!");
           }
