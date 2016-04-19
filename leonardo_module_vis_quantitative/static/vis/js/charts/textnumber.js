@@ -7,8 +7,8 @@ var leonardo = function(leonardo) {
     TextNumber.inherits(Chart);
     function TextNumber() {
         Chart.apply(this, arguments);
-        
         var self = this;
+        this.initialConfig.pushOrReplaceData="replace";
 
         this.render = function(chartSelector) {
             var data = self.instances[chartSelector].data;

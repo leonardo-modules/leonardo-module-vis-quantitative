@@ -7,8 +7,8 @@ var leonardo = function(leonardo) {
     Isotype.inherits(Chart);
     function Isotype() {
         Chart.apply(this, arguments);
-        
         var self = this;
+        this.initialConfig.pushOrReplaceData="replace";
 
         this.render = function(chartSelector) {
             var data = self.getDataValue(chartSelector);
