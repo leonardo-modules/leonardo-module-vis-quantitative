@@ -19,7 +19,8 @@ LEONARDO_JS_FILES = [
 ]
 
 LEONARDO_SCSS_FILES = [
-    'vis/scss/angular_gauge.scss',
+    'vis/scss/gauge.scss',
+    'vis/scss/isotype.scss',
     'vendor/scss/nvd3.scss',
     'vendor/css/cubism.css'
 ]
@@ -34,10 +35,11 @@ LEONARDO_WIDGETS = [
     'leonardo_module_vis_quantitative.widget.barchart.models.BarChartWidget',
     'leonardo_module_vis_quantitative.widget.donutchart.models.DonutChartWidget',
     'leonardo_module_vis_quantitative.widget.horizonchart.models.HorizonChartWidget',
+    'leonardo_module_vis_quantitative.widget.isotype.models.IsotypeWidget',
     'leonardo_module_vis_quantitative.widget.linechart.models.LineChartWidget',
     'leonardo_module_vis_quantitative.widget.systemchart.models.SystemChartWidget',
+    'leonardo_module_vis_quantitative.widget.textnumber.models.TextNumberWidget',
     'leonardo_module_vis_quantitative.widget.timetable.models.TimeTableWidget',
-#    'leonardo_module_vis_quantitative.widget.textnumber.models.TextNumberWidget',
 ]
 
 

@@ -20,7 +20,7 @@ var leonardo = function(leonardo) {
 
         this.render = function(chartSelector) {
             var data = self.instances[chartSelector].data;
-            $(chartSelector).prepend("<p>Data:" + JSON.stringify(data[0].values)+"</p><hr>");
+            $(chartSelector).prepend("<p>Data:" + JSON.stringify(data[0].value)+"</p><hr>");
             console.log(data);
         };
 

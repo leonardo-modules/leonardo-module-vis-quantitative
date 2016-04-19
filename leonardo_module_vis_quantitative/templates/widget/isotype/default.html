@@ -4,7 +4,7 @@
 {% load jsonify %}
 
 {% block content %}
-<div id="vis_{{ widget.fe_identifier }}"></div>
+<div class="isotype" id="vis_{{ widget.fe_identifier }}"></div>
 <script type="text/javascript">
 $(function(){
   loadResource({src: '{% static "vis/js/charts/isotype.js" %}', callback: function(){

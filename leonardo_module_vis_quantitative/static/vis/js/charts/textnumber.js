@@ -1,5 +1,5 @@
 /*
- *  Leonardo charts TextNumber module 
+ *  Leonardo quatitative visualization module: Tex number widget
  */
 var leonardo = function(leonardo) {
     leonardo.charts = leonardo.charts || {};
@@ -12,7 +12,7 @@ var leonardo = function(leonardo) {
 
         this.render = function(chartSelector) {
             var data = self.instances[chartSelector].data;
-            $(chartSelector).html("<p>Data:" + JSON.stringify(data[0].values)+"</p>");
+            $(chartSelector).html("<h1>" + data[0].value+"</h1>");
         };
 
         this.init = function(config) {
