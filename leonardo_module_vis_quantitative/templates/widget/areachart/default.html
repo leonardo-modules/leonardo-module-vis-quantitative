@@ -5,7 +5,6 @@
 
 {% block content %}
 <div id="vis_{{ widget.fe_identifier }}"><svg></svg></div>
-data: {{ widget.get_chart_params|jsonify }}
 <script type="text/javascript">
 $(function(){
   loadResource({src: '{% static "vis/js/charts/areachart.js" %}', callback: function(){

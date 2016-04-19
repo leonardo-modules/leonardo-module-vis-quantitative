@@ -175,6 +175,10 @@ class TemporalDataWidget(Widget):
         data = self.get_graphite_data(row, **kwargs)
         for datum in data:
             datum['values'] = [datum['values'][-1], ]
+            if 'expected_timestamp' in kwargs:
+                if kwargs['expected_timestamp'] != datum['values'][0]['x']:
+                    datum['offset'] = kwargs['expected_timestamp'] - datum['values'][0]['x']
+                    datum['values'][0]['x'] = kwargs['expected_timestamp']
         return data
 
     @cached_property
