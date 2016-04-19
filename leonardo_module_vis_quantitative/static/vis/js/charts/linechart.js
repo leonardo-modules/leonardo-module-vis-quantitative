@@ -32,7 +32,7 @@ var leonardo = function(leonardo) {
                     .tickFormat(function(d){return d3.time.format(config.timeFormat)(new Date(d*1000));});
               
                 chart.yAxis   
-                    .tickFormat(d3.format('.04f'));
+                    .tickFormat(d3.format(config.valueFormat));
 
                 self.instances[config.chartSelector].chart = chart;
                 self.render(config.chartSelector);

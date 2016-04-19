@@ -272,16 +272,39 @@ class TimeSeriesWidget(TemporalDataWidget):
         verbose_name=_('high horizon'), blank=True, null=True)
 
     def get_value_format(self):
-        return 0
+
+        if self.high_horizon:
+            if self.high_horizon > 100:
+                value_format = "s"
+            if self.high_horizon > 10:
+                value_format = ".1r"
+            if self.high_horizon > 1:
+                value_format = ".2r"
+            else:
+                value_format = ".3r"
+        else:
+            value_format = ""
+            
+        return value_format
 
     def get_time_format(self):
 
         duration = self.get_duration_delta()
+	year = timedelta(days=365).total_seconds()
+	month = timedelta(days=30).total_seconds()
+	day = timedelta(days=1).total_seconds()
+	minute = timedelta(minutes=1).total_seconds()
 
-        if duration < 600:
+        if duration > year:
+            time_format = "%b %y"
+        elif duration > month:
             time_format = "%e %b"
+        elif duration > day:
+            time_format = "%H:%M %a"
+        elif duration > minute:
+            time_format = "%M:%S"
         else:
-            time_format = "%H:%M"
+            time_format = ""
 
         return time_format
 
@@ -290,7 +313,8 @@ class TimeSeriesWidget(TemporalDataWidget):
 
         super_data = super(TimeSeriesWidget, self).get_chart_params
         data = {
-           'timeFormat': self.get_time_format()
+           'timeFormat': self.get_time_format(),
+           'valueFormat': self.get_value_format()
         }
         final_data = super_data.copy()
         final_data.update(data)
