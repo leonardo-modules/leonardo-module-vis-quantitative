@@ -57,8 +57,12 @@ Chart.prototype =  {
     updateData: function(chartSelector) {
         var self=this, chart = self.instances[chartSelector], updateParams={method: "get_update_data"};
         if(chart.config.sendTimestamps && typeof chart.config.timestampKey === 'string'){
-          updateParams.last_timestamp = chart.data[chart.data.length-1][chart.config.timestampKey];
-          updateParams.expected_timestamp = updateParams.last_timestamp + chart.config.updateInterval;
+          if(chart.data.length>0){
+            updateParams.last_timestamp = chart.data[0].values[chart.data[0].values.length-1][chart.config.timestampKey];
+            updateParams.expected_timestamp = updateParams.last_timestamp + chart.config.updateInterval;
+          }else{
+            console.log("Cannot send timestamps with update request, actual data is empty!");
+          }
         }
         return $.ajax({
             type: 'POST',
