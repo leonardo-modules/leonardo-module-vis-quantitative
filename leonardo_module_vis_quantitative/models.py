@@ -314,7 +314,8 @@ class TimeSeriesWidget(TemporalDataWidget):
         super_data = super(TimeSeriesWidget, self).get_chart_params
         data = {
            'timeFormat': self.get_time_format(),
-           'valueFormat': self.get_value_format()
+           'valueFormat': self.get_value_format(),
+           'sendTimestamps': True
         }
         final_data = super_data.copy()
         final_data.update(data)
