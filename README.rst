@@ -3,6 +3,10 @@
 Leonardo Quantitative Visualizations
 ====================================
 
+General chart theory
+====================
+
+- Battle of the Charts: Why Cartesian Wins Against Radial http://blog.visual.ly/cartesian-vs-radial-charts/
 
 Available widgets
 =================
@@ -18,8 +22,11 @@ Doughnut chart
 
 - http://d3pie.org/
 
+
 Time table
 ----------
+
+- Simple tables in D3 http://bl.ocks.org/gka/17ee676dc59aa752b4e6
 
 Isotype
 -------
@@ -31,6 +38,10 @@ Liquid fill gauge
 
 - D3 Liquid Fill Gauge http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6
 
+Rose chart
+----------
+<
+- Nightingale's Rose + D3.js http://bl.ocks.org/kgryte/5926740
 
 Metric dissected
 ================

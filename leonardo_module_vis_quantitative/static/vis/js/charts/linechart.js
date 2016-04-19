@@ -28,10 +28,12 @@ var leonardo = function(leonardo) {
                               .forceY([0, 0.01])
                               .useInteractiveGuideline(true);
               
-                chart.xAxis    
-                    .tickFormat(function(d){return d3.time.format(config.timeFormat)(new Date(d*1000));});
-              
-                chart.yAxis   
+                chart.xAxis
+                    .tickFormat(function(d) {
+                        return d3.time.format(config.timeFormat)(new Date(d * 1000));
+                    });
+
+                chart.yAxis
                     .tickFormat(d3.format(config.valueFormat));
 
                 self.instances[config.chartSelector].chart = chart;

@@ -31,10 +31,10 @@ var leonardo = function(leonardo) {
                 }
                 chart.xAxis
                     .tickFormat(function(d) {
-                        return d3.time.format('%d-%b')(new Date(d * 1000));
+                        return d3.time.format(config.timeFormat)(new Date(d * 1000));
                     });
                 chart.yAxis
-                    .tickFormat(d3.format('.0'));
+                    .tickFormat(d3.format(config.valueFormat));
                 self.instances[config.chartSelector].chart = chart;
                 self.render(config.chartSelector);
                 nv.utils.windowResize(function() {

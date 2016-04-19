@@ -284,27 +284,27 @@ class TimeSeriesWidget(TemporalDataWidget):
                 value_format = ".3r"
         else:
             value_format = ""
-            
+
         return value_format
 
     def get_time_format(self):
 
         duration = self.get_duration_delta()
-	year = timedelta(days=365).total_seconds()
-	month = timedelta(days=30).total_seconds()
-	day = timedelta(days=1).total_seconds()
-	minute = timedelta(minutes=1).total_seconds()
+        year = datetime.timedelta(days=365).total_seconds()
+        month = datetime.timedelta(days=30).total_seconds()
+        day = datetime.timedelta(days=1).total_seconds()
+        minute = datetime.timedelta(minutes=1).total_seconds()
 
         if duration > year:
             time_format = "%b %y"
         elif duration > month:
             time_format = "%e %b"
-        elif duration > day:
-            time_format = "%H:%M %a"
-        elif duration > minute:
-            time_format = "%M:%S"
+        elif duration > day * 5:
+            time_format = "%e %b"
+        elif duration > minute * 30:
+            time_format = "%H:%M"
         else:
-            time_format = ""
+            time_format = "%H:%M:%S"
 
         return time_format
 

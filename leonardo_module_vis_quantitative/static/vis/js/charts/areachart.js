@@ -30,12 +30,13 @@ var leonardo = function(leonardo) {
                   .showControls(false)       //Allow user to choose 'Stacked', 'Stream', 'Expanded' mode.
                   .clipEdge(true);
   
-                chart.xAxis    
-            //        .tickFormat(d3.format(',r'));
-                    .tickFormat(function(d){return d3.time.format('%d-%b')(new Date(d*1000));});
-              
-                chart.yAxis   
-                    .tickFormat(d3.format('.04f'));
+                chart.xAxis
+                    .tickFormat(function(d) {
+                        return d3.time.format(config.timeFormat)(new Date(d * 1000));
+                    });
+
+                chart.yAxis
+                    .tickFormat(d3.format(config.valueFormat));
 
                 chart.style(config.style);
                 
