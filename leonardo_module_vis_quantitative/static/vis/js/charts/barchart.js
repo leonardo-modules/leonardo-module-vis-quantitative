@@ -7,7 +7,7 @@ var leonardo = function(leonardo) {
     Barchart.inherits(Chart);
     function Barchart() {
         Chart.apply(this, arguments);
-        this.initialConfig.stacked=true;
+        this.initialConfig.display="stack";
         
         var self = this;
         this.setChartHeight = function(chartSelector) {
@@ -26,7 +26,7 @@ var leonardo = function(leonardo) {
                     .rotateLabels(0)
                     .showControls(false)
                     .groupSpacing(0.1);
-                if (config.stacked) {
+                if (config.display == "stack") {
                     chart.stacked(true);
                 }
                 chart.xAxis
@@ -35,6 +35,7 @@ var leonardo = function(leonardo) {
                     });
                 chart.yAxis
                     .tickFormat(d3.format(config.valueFormat));
+
                 self.instances[config.chartSelector].chart = chart;
                 self.render(config.chartSelector);
                 nv.utils.windowResize(function() {

@@ -9,18 +9,18 @@ default_app_config = 'leonardo_module_vis_quantitative.Config'
 LEONARDO_OPTGROUP = 'Quantitative Visualizations'
 
 LEONARDO_JS_FILES = [
-#    'vis/js/angular_gauge_area.js',
-#    'vis/js/angular_gauge_pointer.js',
-#    'vis/js/concentric_gauge_area.js',
     'vis/js/charts/chart.js',
-    'vendor/js/d3pie.js',
+#    'vendor/js/d3pie.js',
     'vendor/js/nvd3.js',
-    'vendor/js/cubism.js'
+    'vendor/js/cubism.js',
+    'vendor/js/cal-heatmap.js',
+    'vendor/js/radial-progress-chart.js'
 ]
 
 LEONARDO_SCSS_FILES = [
     'vis/scss/gauge.scss',
     'vis/scss/isotype.scss',
+    'vendor/scss/cal-heatmap.scss',
     'vendor/scss/nvd3.scss',
     'vendor/css/cubism.css'
 ]
@@ -37,6 +37,7 @@ LEONARDO_WIDGETS = [
     'leonardo_module_vis_quantitative.widget.horizonchart.models.HorizonChartWidget',
     'leonardo_module_vis_quantitative.widget.isotype.models.IsotypeWidget',
     'leonardo_module_vis_quantitative.widget.linechart.models.LineChartWidget',
+    'leonardo_module_vis_quantitative.widget.progressbar.models.ProgressBarWidget',
     'leonardo_module_vis_quantitative.widget.systemchart.models.SystemChartWidget',
     'leonardo_module_vis_quantitative.widget.textnumber.models.TextNumberWidget',
     'leonardo_module_vis_quantitative.widget.timetable.models.TimeTableWidget',

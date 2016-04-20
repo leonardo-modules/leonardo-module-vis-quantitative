@@ -50,9 +50,10 @@ Radial bar chart
 
 - Visualisation of domestic energy consumption http://prcweb.co.uk/lab/energy/
 
-Radial progress chart
----------------------
+Radial progress bar
+-------------------
 
+- http://pablomolnar.github.io/radial-progress-chart/
 
 Metric dissected
 ================

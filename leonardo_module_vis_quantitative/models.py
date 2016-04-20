@@ -175,7 +175,6 @@ class TemporalDataWidget(Widget):
         data = self.get_graphite_data(row, **kwargs)
         for datum in data:
             datum['values'] = datum['values'][-1:]
-            print kwargs
             if 'expected_timestamp' in kwargs:
                 datum['method'] = 'update'
                 if kwargs['expected_timestamp'] != datum['values'][0]['x']:
@@ -420,6 +419,24 @@ class NumericWidget(TemporalDataWidget):
 
     def get_update_graphite_data(self, row=None, **kwargs):
         return self.get_graphite_data(row, **kwargs)
+
+    def get_dummy_data(self, **kwargs):
+        data = []
+        for metric in self.get_metrics():
+            data.append({
+                'key': metric['name'],
+                'value': randint(0, 100)
+            })
+        return data
+
+    def get_update_dummy_data(self, **kwargs):
+        data = []
+        for metric in self.get_metrics():
+            data.append({
+                'key': metric['name'],
+                'value': randint(0, 100)
+            })
+        return data
 
     class Meta:
         abstract = True

@@ -9,28 +9,31 @@ var leonardo = function(leonardo) {
         Chart.apply(this, arguments);
         var self = this;
         this.initialConfig.pushOrReplaceData="replace";
+        this.initialConfig.strokeWidth=30;
+        this.initialConfig.strokeGap=5;
 
         this.render = function(chartSelector) {
             var data = self.instances[chartSelector].data;
-            $(chartSelector).html("<h1>" + data[0].value+"</h1>");
+            console.log(data);
+            self.instances[chartSelector].chart.update(data);
         };
 
         this.init = function(config) {
-            chart = new RadialProgressChart('.progress', {
-                diameter: 200,
-                series: [
-                  {
-                    labelStart: '\uF105',
-                    value: 0,
-                    color: {
-                      linearGradient: { x1: '0%', y1: '100%', x2: '50%', y2: '0%', spreadMethod: 'pad' },
-                      stops: [
-                        {offset: '0%', 'stop-color': '#ffff00', 'stop-opacity': 1},
-                        {offset: '100%', 'stop-color': '#ff0000', 'stop-opacity': 1}
-                      ]}
-                  }
-                ],
-
+            var width = $(config.containerSelector).width();
+            var metrics = config.series.length;
+            var diameter = width - 2 * (config.strokeWidth * metrics + config.strokeGap * (metrics-1));
+            var series = config.series;
+            self.instances[config.chartSelector].chart = new RadialProgressChart(config.chartSelector, {
+                diameter: diameter,
+                series: series,
+                shadow: {
+                  width: 0
+                },
+                stroke: {
+                    width: config.strokeWidth,
+                    gap: config.strokeGap
+                }
+            });
             self.render(config.chartSelector);
         };
     };

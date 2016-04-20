@@ -1,6 +1,6 @@
 
-from django.utils.translation import ugettext_lazy as _
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from leonardo_module_vis_quantitative.models import NumericWidget
 from leonardo.module.media.models import Vector
 

@@ -10,24 +10,39 @@ var leonardo = function(leonardo) {
         var self = this;
 
         this.render = function(chartSelector) {
-            d3.select(chartSelector).datum(this.getChart(chartSelector).data).transition().duration(350).call(this.getChart(chartSelector).chart);
+            var data = this.getChart(chartSelector).data;
+            d3.select(chartSelector)
+              .datum(data)
+              .transition()
+              .duration(350)
+              .call(this.getChart(chartSelector).chart);
         };
+
         this.init = function(config) {
             var chart_width = $(config.containerSelector).width();
             $(config.chartSelector).height(chart_width);
-              nv.addGraph(function() {
+            nv.addGraph(function() {
                 var chart = nv.models.pieChart()
-                  .x(function(d) { return d.label })
+                  .x(function(d) { return d.key })
                   .y(function(d) { return d.value })
                   .labelType("value") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
-                  .donut(true)          //Turn on Donut mode. Makes pie chart look tasty!
-                  .donutRatio(0.35)  
                   .height(chart_width)
+                  .padAngle(.05)
+                  .cornerRadius(5)
                   .showLabels(true);
+                if(config.donut_ratio > 0){
+                  chart.donut(true)
+                    .donutRatio(config.donut_ratio/100)  
+                }
+                if(config.display == "half_circle_top"){
+                  chart.pie
+                    .startAngle(function(d) { return d.startAngle/2 - Math.PI/2 })
+                    .endAngle(function(d) { return d.endAngle/2 - Math.PI/2 });
+                }
                 self.instances[config.chartSelector].chart = chart;
                 self.render(config.chartSelector);
                 return chart;
-              });
+            });
         };
     };
     leonardo.charts.donutchart = new Donutchart();
