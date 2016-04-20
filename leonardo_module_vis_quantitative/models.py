@@ -424,7 +424,7 @@ class NumericWidget(TemporalDataWidget):
         data = []
         for metric in self.get_metrics():
             data.append({
-                'key': metric['name'],
+#                'key': metric['name'],
                 'value': randint(0, 100)
             })
         return data
@@ -433,7 +433,7 @@ class NumericWidget(TemporalDataWidget):
         data = []
         for metric in self.get_metrics():
             data.append({
-                'key': metric['name'],
+#                'key': metric['name'],
                 'value': randint(0, 100)
             })
         return data

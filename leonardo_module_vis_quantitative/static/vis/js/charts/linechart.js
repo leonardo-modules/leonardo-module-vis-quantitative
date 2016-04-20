@@ -18,6 +18,7 @@ var leonardo = function(leonardo) {
         this.render = function(chartSelector) {
             d3.select(chartSelector).datum(this.getChart(chartSelector).data).call(this.getChart(chartSelector).chart);
         };
+
         this.init = function(config) {
              nv.addGraph(function() {
                 var chart = nv.models.lineChart() 

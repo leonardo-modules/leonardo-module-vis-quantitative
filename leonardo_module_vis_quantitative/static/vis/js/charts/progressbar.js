@@ -9,23 +9,25 @@ var leonardo = function(leonardo) {
         Chart.apply(this, arguments);
         var self = this;
         this.initialConfig.pushOrReplaceData="replace";
-        this.initialConfig.strokeWidth=30;
+        this.initialConfig.strokeWidth=20;
         this.initialConfig.strokeGap=5;
 
         this.render = function(chartSelector) {
             var data = self.instances[chartSelector].data;
             console.log(data);
+            console.log(self.instances[chartSelector].chart);
             self.instances[chartSelector].chart.update(data);
         };
 
         this.init = function(config) {
             var width = $(config.containerSelector).width();
             var metrics = config.series.length;
-            var diameter = width - 2 * (config.strokeWidth * metrics + config.strokeGap * (metrics-1));
-            var series = config.series;
+            // var stroke_width = (width/2 - config.strokeGap * (metrics-1)) / (metrics+2)
+            var diameter = (width - 2 * (config.strokeWidth * metrics + config.strokeGap * (metrics-1))) - 10;
+            console.log(config);
             self.instances[config.chartSelector].chart = new RadialProgressChart(config.chartSelector, {
                 diameter: diameter,
-                series: series,
+                series: config.series,
                 shadow: {
                   width: 0
                 },
