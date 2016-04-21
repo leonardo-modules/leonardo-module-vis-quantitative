@@ -10,11 +10,7 @@ class SystemChartWidget(NumericWidget):
     """
     background = models.ForeignKey(
         Vector, related_name="%(app_label)s_%(class)s_related")
-
-    class Meta:
-        abstract = True
-        verbose_name = _("System chart")
-        verbose_name_plural = _("System charts")
+#    charts = models.TextField(verbose_name=_("charts"))
 
     def get_charts(self):
         metrics = self.get_metrics()
@@ -27,6 +23,7 @@ class SystemChartWidget(NumericWidget):
         if 'type' in metric and metric["type"] =='gauge':
             return {
                 "chart": metric["type"],
+                "set": metric["set"],
                 "x":metric["x"],
                 "y":metric["y"],
                 "chart_config": {
@@ -38,6 +35,7 @@ class SystemChartWidget(NumericWidget):
         elif 'type' in metric and metric["type"] =='number':
             return {
                 "chart": metric["type"],
+                "chart_id": metric["chart_id"],
                 "x":metric["x"],
                 "y":metric["y"],
                 "chart_config": {
@@ -46,3 +44,7 @@ class SystemChartWidget(NumericWidget):
                 }
             }
 
+    class Meta:
+        abstract = True
+        verbose_name = _("System chart")
+        verbose_name_plural = _("System charts")

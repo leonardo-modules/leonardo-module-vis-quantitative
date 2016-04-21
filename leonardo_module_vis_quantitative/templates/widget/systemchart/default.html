@@ -21,9 +21,14 @@ $(function() {
       chartSelector:"#inner_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
       containerSelector:"#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
       url: "{{ widget.get_data_url }}",
-      requestData:
-        {widget_id:$("#systemchart_{{ widget.fe_identifier }}").closest("div.leonardo-widget").attr('id'),
-         kwargs:JSON.stringify({row: {{ forloop.counter0 }}})},
+      requestData: {
+        widget_id: "{{ widget.fe_identifier }}",
+        kwargs:
+          JSON.stringify({
+            row: {{ forloop.counter0 }},
+            chart_id: "{{ widget.chart_id }}"
+          })
+      },
       updateInterval:{{ widget.refresh_interval }} * 1000,
     },JSON.parse('{{ chart.chart_config|jsonify }}')));
   }

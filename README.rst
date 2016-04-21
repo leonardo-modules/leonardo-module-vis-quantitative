@@ -33,7 +33,10 @@ Time table
 Isotype
 -------
 
-- Pictogram grid in d3js http://bl.ocks.org/alansmithy/d832fc03f6e6a91e99f4
+- bl.ocks: Pictogram grid in d3js http://bl.ocks.org/alansmithy/d832fc03f6e6a91e99f4
+- bl.ocks: d3.layout.colgrid http://bl.ocks.org/giuliano108/7482331
+- bl.ocks: Grid layout http://bl.ocks.org/herrstucki/5684816
+
 
 Liquid fill gauge
 -----------------
