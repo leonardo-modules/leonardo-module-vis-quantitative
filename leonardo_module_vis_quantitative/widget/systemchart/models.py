@@ -23,7 +23,6 @@ class SystemChartWidget(NumericWidget):
         if 'type' in metric and metric["type"] =='gauge':
             return {
                 "chart": metric["type"],
-                "set": metric["set"],
                 "x":metric["x"],
                 "y":metric["y"],
                 "chart_config": {
@@ -35,7 +34,6 @@ class SystemChartWidget(NumericWidget):
         elif 'type' in metric and metric["type"] =='number':
             return {
                 "chart": metric["type"],
-                "chart_id": metric["chart_id"],
                 "x":metric["x"],
                 "y":metric["y"],
                 "chart_config": {

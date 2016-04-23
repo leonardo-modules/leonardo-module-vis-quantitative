@@ -10,6 +10,7 @@ $(function(){
   loadResource({src: '{% static "vis/js/charts/isotype.js" %}', callback: function(){
     leonardo.charts.isotype.create({{ widget.get_chart_params|jsonify }});
   }});
-}); 
+});
+
 </script>
 {% endblock %}

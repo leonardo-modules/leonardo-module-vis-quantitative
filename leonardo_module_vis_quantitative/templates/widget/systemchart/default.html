@@ -25,8 +25,7 @@ $(function() {
         widget_id: "{{ widget.fe_identifier }}",
         kwargs:
           JSON.stringify({
-            row: {{ forloop.counter0 }},
-            chart_id: "{{ widget.chart_id }}"
+            row: {{ forloop.counter0 }}
           })
       },
       updateInterval:{{ widget.refresh_interval }} * 1000,
