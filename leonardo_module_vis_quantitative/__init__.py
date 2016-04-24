@@ -8,6 +8,8 @@ default_app_config = 'leonardo_module_vis_quantitative.Config'
 
 LEONARDO_OPTGROUP = 'Quantitative Visualizations'
 
+LEONARDO_PUBLIC = True
+
 LEONARDO_JS_FILES = [
     'vis/js/charts/chart.js',
 #    'vendor/js/d3pie.js',
