@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.apps import AppConfig
 
+public = True
 
 default_app_config = 'leonardo_module_vis_quantitative.Config'
 
