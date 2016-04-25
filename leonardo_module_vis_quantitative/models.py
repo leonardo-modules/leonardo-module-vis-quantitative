@@ -424,8 +424,8 @@ class NumericWidget(TemporalDataWidget):
         data = []
         for metric in self.get_metrics():
             data.append({
-#                'key': metric['name'],
-                'value': randint(0, 100)
+                'label': metric['name'],
+                'value': randint(100, 200)
             })
         return data
 
@@ -433,24 +433,10 @@ class NumericWidget(TemporalDataWidget):
         data = []
         for metric in self.get_metrics():
             data.append({
-#                'key': metric['name'],
-                'value': randint(0, 100)
+                'label': metric['name'],
+                'value': randint(100, 200)
             })
         return data
 
     class Meta:
         abstract = True
-
-#    tabs = {
-#        'Format': {
-#            'name': _('Format'),
-#            'fields': ('duration_length', 'duration_unit',
-#                       'low_horizon', 'high_horizon')
-#        },
-#        'Data': {
-#            'name': _('Data'),
-#            'fields': ('step_length', 'step_length',
-#                       'step_unit', 'step_fun',
-#                       'start', 'align_to_from')
-#        }
-#    }

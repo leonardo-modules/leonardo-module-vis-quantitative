@@ -23,9 +23,10 @@ var leonardo = function(leonardo) {
             $(config.chartSelector).height(chart_width);
             nv.addGraph(function() {
                 var chart = nv.models.pieChart()
-                  .x(function(d) { return d.key })
+                  .x(function(d) { return d.label })
                   .y(function(d) { return d.value })
-                  .labelType("value") //Configure what type of data to show in the label. Can be "key", "value" or "percent"
+//Configure what type of data to show in the label. Can be "key", "value" or "percent"
+                  .labelType("value")
                   .height(chart_width)
                   .padAngle(.05)
                   .cornerRadius(5)
