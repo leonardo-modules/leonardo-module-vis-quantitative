@@ -25,25 +25,29 @@ Chart.prototype =  {
           // test response validity
           if(self.testResponse(res,config.dataKey)){
               self.instances[config.chartSelector].data=(config.dataKey)?res[config.dataKey]:res;
-              self.init(config);
-              setInterval(function(){
-                  self.updateData(config.chartSelector).done(function(res) {
-                      if(self.testResponse(res,config.dataKey)){
-                          if(config.pushOrReplaceData == "push"){
-                            self.pushData(config.chartSelector,(config.dataKey)?res[config.dataKey]:res);
-                          }else{
-                            self.instances[config.chartSelector].data=(config.dataKey)?res[config.dataKey]:res;
-                          }
-                          self.render(config.chartSelector);
-                      }
-                  }).fail(function(err){
-                      console.log("Server error in update "+err);
-                  });
-              }, config.updateInterval);
+          }else{
+            console.log("Server returns invalid response on init, initing without data.");
           }
+          self.init(config);
       }).fail(function(err){
-          console.log("Server error on init "+err);
+          console.log("Server error on init, initing without data. Error: "+err);
+          self.init(config);
       });
+      // create update interval
+      setInterval(function(){
+              self.updateData(config.chartSelector).done(function(res) {
+                  if(self.testResponse(res,config.dataKey)){
+                      if(config.pushOrReplaceData == "push"){
+                        self.pushData(config.chartSelector,(config.dataKey)?res[config.dataKey]:res);
+                      }else{
+                        self.instances[config.chartSelector].data=(config.dataKey)?res[config.dataKey]:res;
+                      }
+                      self.render(config.chartSelector);
+                  }
+              }).fail(function(err){
+                  console.log("Server error in update. Error: "+err);
+              });
+      }, config.updateInterval);
     },
     getData: function(chartSelector) {
         var self= this;
