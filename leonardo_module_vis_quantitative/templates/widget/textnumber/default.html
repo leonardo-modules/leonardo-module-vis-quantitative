@@ -7,7 +7,7 @@
 <div id="vis_{{ widget.fe_identifier }}"></div>
 <script type="text/javascript">
 $(function(){
-  loadResource({src: '{% static "vis/js/charts/textnumber.js" %}', callback: function(){
+  leonardo.fn.loadResource({src: '{% static "vis/js/charts/textnumber.js" %}', callback: function(){
     leonardo.charts.textnumber.create({{ widget.get_chart_params|jsonify }});
   }});
 });

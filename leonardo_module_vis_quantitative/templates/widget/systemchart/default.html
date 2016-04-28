@@ -15,29 +15,29 @@
 </div>
 <script type="text/javascript">
 {% for chart in widget.get_charts %}
-$(function() {
-  setTimeout(function(){
-    loadResource({src:'{% static "vis/js/charts/gauge.js" %}',callback: function(){
-      leonardo.charts.createChart("{{ chart.chart }}",$.extend({},{
-        chartSelector:"#inner_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
-        containerSelector:"#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
-        url: "{{ widget.get_data_url }}",
-        requestData: {
-          widget_id: "{{ widget.fe_identifier }}",
-          kwargs:
-            JSON.stringify({
-              row: {{ forloop.counter0 }}
-            })
-        },
-        updateInterval:{{ widget.refresh_interval }} * 1000,
-      },JSON.parse('{{ chart.chart_config|jsonify }}')));
-    }
+$(function(){
+  $("#systemchart_{{ widget.fe_identifier }} img").imagesLoaded(function(){
+      leonardo.fn.loadResource({src:'{% static "vis/js/charts/gauge.js" %}',callback: function(){
+        leonardo.charts.createChart("{{ chart.chart }}",$.extend({},{
+          chartSelector:"#inner_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
+          containerSelector:"#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
+          url: "{{ widget.get_data_url }}",
+          requestData: {
+            widget_id: "{{ widget.fe_identifier }}",
+            kwargs:
+              JSON.stringify({
+                row: {{ forloop.counter0 }}
+              })
+          },
+          updateInterval:{{ widget.refresh_interval }} * 1000,
+        },JSON.parse('{{ chart.chart_config|jsonify }}')));
+      }
+    });
+    var $systemchart = $("#systemchart_{{ widget.fe_identifier }} img"), $chartContainer=$("#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}"), chartX={{ chart.x }}, chartY={{ chart.y }};
+    $chartContainer.css("position","absolute");
+    $chartContainer.css("top",($systemchart.height()*chartX) - ($chartContainer.height()/2));
+    $chartContainer.css("left",($systemchart.width()*chartY) - ($chartContainer.width()/2));
   });
-  var $systemchart = $("#systemchart_{{ widget.fe_identifier }} img"), $chartContainer=$("#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}"), chartX={{ chart.x }}, chartY={{ chart.y }};
-  $chartContainer.css("position","absolute");
-  $chartContainer.css("top",($systemchart.height()*chartX) - ($chartContainer.height()/2));
-  $chartContainer.css("left",($systemchart.width()*chartY) - ($chartContainer.width()/2));
-  },1000);
 });
 {% endfor %}
 //console.log('{{ widget.get_charts }}');

@@ -5,7 +5,7 @@
 <div id="angular_gauge_{{ widget.fe_identifier }}" class="angular-gauge-tron"></div>
 <script type="text/javascript">
 $(function(){
-    loadResource({src:'{% static "vis/js/charts/gauge_area.js" %}',callback: function(){
+    leonardo.fn.loadResource({src:'{% static "vis/js/charts/gauge_area.js" %}',callback: function(){
       leonardo.charts.gauge_area.create({
         chartSelector:"#angular_gauge_{{ widget.fe_identifier }}",
         containerSelector:"#{{ widget.fe_identifier }}",

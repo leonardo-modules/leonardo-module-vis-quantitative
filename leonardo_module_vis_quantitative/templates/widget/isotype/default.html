@@ -7,7 +7,7 @@
 <div class="isotype" id="vis_{{ widget.fe_identifier }}"></div>
 <script type="text/javascript">
 $(function(){
-  loadResource({src: '{% static "vis/js/charts/isotype.js" %}', callback: function(){
+  leonardo.fn.loadResource({src: '{% static "vis/js/charts/isotype.js" %}', callback: function(){
     leonardo.charts.isotype.create({{ widget.get_chart_params|jsonify }});
   }});
 });

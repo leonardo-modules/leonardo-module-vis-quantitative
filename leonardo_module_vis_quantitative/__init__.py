@@ -17,7 +17,8 @@ LEONARDO_JS_FILES = [
     'vendor/js/nvd3.js',
     'vendor/js/cubism.js',
     'vendor/js/cal-heatmap.js',
-    'vendor/js/radial-progress-chart.js'
+    'vendor/js/radial-progress-chart.js',
+    'vendor/js/imagesloaded.pkgd.min.js'
 ]
 
 LEONARDO_SCSS_FILES = [

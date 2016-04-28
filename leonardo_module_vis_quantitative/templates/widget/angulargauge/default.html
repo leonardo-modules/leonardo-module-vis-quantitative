@@ -7,7 +7,7 @@
 <div id="vis_{{ widget.fe_identifier }}"></div>
 <script type="text/javascript">
 $(function(){
-  loadResource({src: '{% static "vis/js/charts/gauge.js" %}', callback: function(){
+  leonardo.fn.loadResource({src: '{% static "vis/js/charts/gauge.js" %}', callback: function(){
     leonardo.charts.gauge.create({{ widget.get_chart_params|jsonify }});
   }});
 });
