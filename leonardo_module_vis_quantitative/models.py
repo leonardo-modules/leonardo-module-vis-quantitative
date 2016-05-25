@@ -1,6 +1,5 @@
 # -*- coding:/ utf-8 -*-
 import datetime
-import dateparser
 import json
 from math import floor
 from random import randint
@@ -98,9 +97,8 @@ class TemporalDataWidget(Widget):
     def relative_start(self):
         '''returns relative start if is set'''
         if self.start:
-            start = dateparser.parse(self.start).total_seconds()
             return str(floor(
-                start - floor(self.get_duration_delta()))).rstrip('0').rstrip('.')
+                self.start.total_seconds() - floor(self.get_duration_delta()))).rstrip('0').rstrip('.')
 
         return str(floor(
             time() - self.get_duration_delta())).rstrip('0').rstrip('.')
@@ -368,9 +366,8 @@ class NumericWidget(TemporalDataWidget):
     def relative_start(self):
         '''returns relative start if is set'''
         if self.start:
-            start = dateparser.parse(self.start).total_seconds()
             return str(floor(
-                start - float(self.get_step_delta()))).rstrip('0').rstrip('.')
+                self.start.total_seconds() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
 
         return str(floor(
             time() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
