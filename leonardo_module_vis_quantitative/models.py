@@ -98,8 +98,9 @@ class TemporalDataWidget(Widget):
     def relative_start(self):
         '''returns relative start if is set'''
         if self.start:
+            start = dateparser.parse(self.start).total_seconds()
             return str(floor(
-                dateparser.parse(self.start).total_seconds())).rstrip('0').rstrip('.')
+                start - floor(self.get_duration_delta()))).rstrip('0').rstrip('.')
 
         return str(floor(
             time() - self.get_duration_delta())).rstrip('0').rstrip('.')
@@ -367,8 +368,9 @@ class NumericWidget(TemporalDataWidget):
     def relative_start(self):
         '''returns relative start if is set'''
         if self.start:
+            start = dateparser.parse(self.start).total_seconds()
             return str(floor(
-                dateparser.parse(self.start).total_seconds())).rstrip('0').rstrip('.')
+                start - float(self.get_step_delta()))).rstrip('0').rstrip('.')
 
         return str(floor(
             time() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
