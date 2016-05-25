@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from leonardo_module_vis_quantitative.models import NumericWidget
 from leonardo.module.media.models import Vector
 
+
 class SystemChartWidget(NumericWidget):
     """
     Widget which shows number widget in system chart on vector image underlay.
@@ -19,26 +20,26 @@ class SystemChartWidget(NumericWidget):
             charts.append(self.create_chart_from_metric(metric))
         return charts
 
-    def create_chart_from_metric(self,metric):
-        if 'type' in metric and metric["type"] =='gauge':
+    def create_chart_from_metric(self, metric):
+        if 'type' in metric and metric["type"] == 'gauge':
             return {
                 "chart": metric["type"],
-                "x":metric["x"],
-                "y":metric["y"],
+                "x": metric["x"],
+                "y": metric["y"],
                 "chart_config": {
                     "label": metric["name"],
                     "max": metric["horizon"],
-                    "scale":metric["scale"]
+                    "scale": metric["scale"]
                 }
             }
-        elif 'type' in metric and metric["type"] =='number':
+        elif 'type' in metric and metric["type"] == 'number':
             return {
                 "chart": metric["type"],
-                "x":metric["x"],
-                "y":metric["y"],
+                "x": metric["x"],
+                "y": metric["y"],
                 "chart_config": {
                     "label": metric["name"],
-                    "scale":metric["scale"]
+                    "scale": metric["scale"]
                 }
             }
 

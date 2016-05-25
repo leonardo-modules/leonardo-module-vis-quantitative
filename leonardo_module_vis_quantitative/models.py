@@ -363,6 +363,16 @@ class NumericWidget(TemporalDataWidget):
 #    high_horizon = models.IntegerField(
 #        verbose_name=_('high horizon'), blank=True, null=True)
 
+    @cached_property
+    def relative_start(self):
+        '''returns relative start if is set'''
+        if self.start:
+            return str(floor(
+                dateparser.parse(self.start))).rstrip('0').rstrip('.')
+
+        return str(floor(
+            time() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
+
     def get_dummy_data(self, **kwargs):
         return [{'value': randint(0, 100)}]
 
