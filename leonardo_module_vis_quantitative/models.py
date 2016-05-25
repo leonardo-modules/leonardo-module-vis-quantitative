@@ -164,7 +164,7 @@ class TemporalDataWidget(Widget):
             }
 
             if self.start:
-                params['to'] = self.relative_end
+                params['until'] = self.relative_end
 
             request = requests.get(url, params=params)
             json_dict = json.loads(request.text)
@@ -407,7 +407,7 @@ class NumericWidget(TemporalDataWidget):
                 "target": target,
             }
             if self.start:
-                params['to'] = self.relative_end
+                params['until'] = self.relative_end
 
             request = requests.get(url, params=params)
             json_dict = json.loads(request.text)
