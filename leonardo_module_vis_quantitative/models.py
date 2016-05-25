@@ -95,6 +95,12 @@ class TemporalDataWidget(Widget):
         verbose_name=_('Align to from'), default=False)
 
     @cached_property
+    def relative_end(self):
+        if self.start:
+            return str(floor(
+                mktime(self.start.timetuple()) + floor(self.get_duration_delta()))).rstrip('0').rstrip('.')
+
+    @cached_property
     def relative_start(self):
         '''returns relative start if is set'''
         if self.start:
@@ -156,6 +162,9 @@ class TemporalDataWidget(Widget):
                 "from": self.relative_start,
                 "target": target,
             }
+
+            if self.start:
+                params['to'] = self.relative_end
 
             request = requests.get(url, params=params)
             json_dict = json.loads(request.text)
@@ -373,6 +382,12 @@ class NumericWidget(TemporalDataWidget):
         return str(floor(
             time() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
 
+    @cached_property
+    def relative_end(self):
+        if self.start:
+            return str(floor(
+                mktime(self.start.timetuple()) + floor(self.get_step_delta()))).rstrip('0').rstrip('.')
+
     def get_dummy_data(self, **kwargs):
         return [{'value': randint(0, 100)}]
 
@@ -391,6 +406,8 @@ class NumericWidget(TemporalDataWidget):
                 "from": self.relative_start,
                 "target": target,
             }
+            if self.start:
+                params['to'] = self.relative_end
 
             request = requests.get(url, params=params)
             json_dict = json.loads(request.text)
