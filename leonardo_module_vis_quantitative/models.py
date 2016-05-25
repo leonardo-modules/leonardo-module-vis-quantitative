@@ -1,6 +1,6 @@
 # -*- coding:/ utf-8 -*-
 import datetime
-import math
+import dateparser
 import json
 from math import floor
 from random import randint
@@ -94,12 +94,15 @@ class TemporalDataWidget(Widget):
     align_to_from = models.BooleanField(
         verbose_name=_('Align to from'), default=False)
 
+    @cached_property
     def relative_start(self):
+        '''returns relative start if is set'''
         if self.start:
-            return self.start
-        else:
-            now = datetime.datetime.now()
-            return now - self.get_duration_delta()
+            return str(floor(
+                dateparser.parse(self.start))).rstrip('0').rstrip('.')
+
+        return str(floor(
+            time() - self.get_duration_delta())).rstrip('0').rstrip('.')
 
     @cached_property
     def source(self):
@@ -147,11 +150,10 @@ class TemporalDataWidget(Widget):
                 metric["target"],
                 self.get_step_delta(),
                 self.step_fun)
-            start = str(floor(
-                time() - self.get_duration_delta())).rstrip('0').rstrip('.')
+
             params = {
                 "format": "json",
-                "from": start,
+                "from": self.relative_start,
                 "target": target,
             }
 
@@ -178,7 +180,8 @@ class TemporalDataWidget(Widget):
             if 'expected_timestamp' in kwargs:
                 datum['method'] = 'update'
                 if kwargs['expected_timestamp'] != datum['values'][0]['x']:
-                    datum['offset'] = kwargs['expected_timestamp'] - datum['values'][0]['x']
+                    datum['offset'] = kwargs['expected_timestamp'] - \
+                        datum['values'][0]['x']
                     datum['values'][0]['x'] = kwargs['expected_timestamp']
         return data
 
@@ -186,9 +189,9 @@ class TemporalDataWidget(Widget):
     def get_chart_params(self):
         return {
             'chartSelector': "#vis_%s" % self.fe_identifier,
-            'containerSelector':"#%s" % self.fe_identifier,
+            'containerSelector': "#%s" % self.fe_identifier,
             'url': str(self.get_data_url),
-            'requestData':{
+            'requestData': {
                 'widget_id': self.fe_identifier
             },
             'updateInterval': self.refresh_interval * 1000
@@ -318,9 +321,9 @@ class TimeSeriesWidget(TemporalDataWidget):
 
         super_data = super(TimeSeriesWidget, self).get_chart_params
         data = {
-           'timeFormat': self.get_time_format(),
-           'valueFormat': self.get_value_format(),
-           'sendTimestamps': True
+            'timeFormat': self.get_time_format(),
+            'valueFormat': self.get_value_format(),
+            'sendTimestamps': True
         }
         final_data = super_data.copy()
         final_data.update(data)
@@ -372,12 +375,10 @@ class NumericWidget(TemporalDataWidget):
             target = 'summarize({}, "{}s", "{}")'.format(
                 metric["target"],
                 self.get_step_delta(), self.step_fun)
-            start = str(floor(
-                time() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
 
             params = {
                 "format": "json",
-                "from": start,
+                "from": self.relative_start,
                 "target": target,
             }
 
@@ -391,7 +392,7 @@ class NumericWidget(TemporalDataWidget):
                     # I expect this to be caused by very short step, try with longer step
                     # TODO: actually get the step and set second try step
                     # larger
-                    if not item_dict:
+                    if not item_dict and not self.start:
                         start = str(floor(
                             time() - datetime.timedelta(minutes=5).total_seconds())).rstrip('0').rstrip('.')
                         params['from'] = start
