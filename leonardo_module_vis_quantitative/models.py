@@ -454,7 +454,7 @@ class NumericWidget(TemporalDataWidget):
                         except:
                             data.append({
                                 'value': reduce(
-                                    lambda x, y: x[0] + y[0],
+                                    lambda x, y: x + y,
                                     [x[0] for x in json_not_none]) / len(json_not_none),
                                 'label': metric['name']
                             })
