@@ -3,14 +3,15 @@ import datetime
 import json
 from math import floor
 from random import randint
-from time import time
+from time import mktime, time
+
 import requests
+from django.core.urlresolvers import reverse_lazy
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from leonardo.module.web.models import Widget
-from django.core.urlresolvers import reverse_lazy
 from yamlfield.fields import YAMLField
 
 SOURCE_TYPES = (
@@ -98,7 +99,7 @@ class TemporalDataWidget(Widget):
         '''returns relative start if is set'''
         if self.start:
             return str(floor(
-                time.mktime(self.start) - floor(self.get_duration_delta()))).rstrip('0').rstrip('.')
+                mktime(self.start) - floor(self.get_duration_delta()))).rstrip('0').rstrip('.')
 
         return str(floor(
             time() - self.get_duration_delta())).rstrip('0').rstrip('.')
@@ -367,7 +368,7 @@ class NumericWidget(TemporalDataWidget):
         '''returns relative start if is set'''
         if self.start:
             return str(floor(
-                time.mktime(self.start) - float(self.get_step_delta()))).rstrip('0').rstrip('.')
+                mktime(self.start) - float(self.get_step_delta()))).rstrip('0').rstrip('.')
 
         return str(floor(
             time() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
