@@ -386,7 +386,7 @@ class NumericWidget(TemporalDataWidget):
     def relative_end(self):
         if self.start:
             return str(floor(
-                mktime(self.start.timetuple()) + floor(self.get_step_delta()))).rstrip('0').rstrip('.')
+                mktime(self.start.timetuple()) + float(self.get_step_delta()))).rstrip('0').rstrip('.')
 
     def get_dummy_data(self, **kwargs):
         return [{'value': randint(0, 100)}]
