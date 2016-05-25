@@ -98,7 +98,7 @@ class TemporalDataWidget(Widget):
         '''returns relative start if is set'''
         if self.start:
             return str(floor(
-                self.start.total_seconds() - floor(self.get_duration_delta()))).rstrip('0').rstrip('.')
+                time.mktime(self.start) - floor(self.get_duration_delta()))).rstrip('0').rstrip('.')
 
         return str(floor(
             time() - self.get_duration_delta())).rstrip('0').rstrip('.')
@@ -367,7 +367,7 @@ class NumericWidget(TemporalDataWidget):
         '''returns relative start if is set'''
         if self.start:
             return str(floor(
-                self.start.total_seconds() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
+                time.mktime(self.start) - float(self.get_step_delta()))).rstrip('0').rstrip('.')
 
         return str(floor(
             time() - float(self.get_step_delta()))).rstrip('0').rstrip('.')
