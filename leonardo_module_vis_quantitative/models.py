@@ -444,13 +444,20 @@ class NumericWidget(TemporalDataWidget):
                             'label': metric['name']
                         })
                     except:
-                        data.append({
-                            'value': reduce(
-                                lambda x, y: x[0] + y[0],
-                                json_not_none) / len(json_not_none),
-                            'label': metric['name']
-                        })
-
+                        try:
+                            data.append({
+                                'value': reduce(
+                                    lambda x, y: x[0] + y[0],
+                                    json_not_none) / len(json_not_none),
+                                'label': metric['name']
+                            })
+                        except:
+                            data.append({
+                                'value': reduce(
+                                    lambda x, y: x[0] + y[0],
+                                    [x[0] for x in json_not_none]) / len(json_not_none),
+                                'label': metric['name']
+                            })
         return data
 
     def get_update_graphite_data(self, row=None, **kwargs):
