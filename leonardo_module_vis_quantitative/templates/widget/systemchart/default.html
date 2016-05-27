@@ -7,7 +7,7 @@
     <img class="svgFill" src="{{ widget.background.url }}"/>
     <div id="SystemChartOverlay" class="overlay">
         {% for chart in widget.get_charts %}
-        <div id="outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}" class="col-xs-2 row-sm-4">
+        <div id="outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}" style="width:150px;height:150px;">
             <div id="inner_{{ widget.fe_identifier }}_{{ forloop.counter0 }}"></div>
         </div>
         {% endfor %}
@@ -33,13 +33,23 @@ $(function(){
         },JSON.parse('{{ chart.chart_config|jsonify }}')));
       }
     });
-    var $systemchart = $("#systemchart_{{ widget.fe_identifier }} img"), $chartContainer=$("#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}"), chartX={{ chart.x }}, chartY={{ chart.y }};
-    $chartContainer.css("position","absolute");
-    $chartContainer.css("top",($systemchart.height()*chartX) - ($chartContainer.height()/2));
-    $chartContainer.css("left",($systemchart.width()*chartY) - ($chartContainer.width()/2));
+    var $systemchart = $("#systemchart_{{ widget.fe_identifier }} img"), 
+        $chartContainer=$("#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}"), 
+        chartX={{ chart.x }}, 
+        chartY={{ chart.y }},
+        placeWidgetFn = function(){
+          var chartContainerCenter={height:$systemchart.height()/2,width:$systemchart.width()/2};
+          $chartContainer.css("position","absolute");
+          $chartContainer.css("left",(chartContainerCenter.width+(chartContainerCenter.width*chartX) - ($chartContainer.width()/2)));
+          
+          $chartContainer.css("top",(chartContainerCenter.height+(chartContainerCenter.height*chartY) - ($chartContainer.height()/2)) - chartY*$systemchart.height());
+    };
+    placeWidgetFn();
+    $(window).on('resize',placeWidgetFn);
   });
 });
 {% endfor %}
+
 //console.log('{{ widget.get_charts }}');
 </script>
 {% endblock %}
