@@ -35,8 +35,8 @@ $(function(){
     });
     var $systemchart = $("#systemchart_{{ widget.fe_identifier }} img"), $chartContainer=$("#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}"), chartX={{ chart.x }}, chartY={{ chart.y }};
     $chartContainer.css("position","absolute");
-    $chartContainer.css("top",$systemchart.height()*chartX);
-    $chartContainer.css("left",$systemchart.width()*chartY);
+    $chartContainer.css("top",($systemchart.height()*chartX) - ($chartContainer.height()/2));
+    $chartContainer.css("left",($systemchart.width()*chartY) - ($chartContainer.width()/2));
   });
 });
 {% endfor %}
