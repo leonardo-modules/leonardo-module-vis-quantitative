@@ -120,6 +120,10 @@ var leonardo = function(leonardo) {
       }else{
         console.log("Cannot create chart, chart with name "+chartName+" not exists!");
       }
-    }
+    };
+    leonardo.charts.removeChart = function(chart,outerChartSelector,innerChartSelector){
+      delete leonardo.charts[chart].instances[outerChartSelector];
+      $(innerChartSelector).empty();
+    };
     return leonardo;
 }(leonardo || {});
