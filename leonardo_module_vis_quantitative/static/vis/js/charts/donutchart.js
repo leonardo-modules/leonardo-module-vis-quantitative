@@ -46,6 +46,6 @@ var leonardo = function(leonardo) {
             });
         };
     };
-    leonardo.charts.donutchart = new Donutchart();
+    leonardo.charts.initChart("donutchart",new Donutchart());
     return leonardo;
 }(leonardo || {});

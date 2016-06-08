@@ -27,6 +27,6 @@ var leonardo = function(leonardo) {
             self.render(config.chartSelector);
         };
     };
-    leonardo.charts.timetable = new TimeTable();
+    leonardo.charts.initChart("timetable",new TimeTable());
     return leonardo;
 }(leonardo || {});

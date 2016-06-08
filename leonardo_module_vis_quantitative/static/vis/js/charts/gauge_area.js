@@ -49,7 +49,7 @@ var leonardo = function(leonardo) {
             }
         };
     };
-    leonardo.charts.gauge_area = new GaugeArea();
+    leonardo.charts.initChart("gauge_area", new GaugeArea());
     
     function concentric_gauge_area(config) {
           var width = config.width,

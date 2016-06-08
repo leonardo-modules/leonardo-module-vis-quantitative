@@ -7,55 +7,53 @@
     <img class="svgFill" src="{{ widget.background.url }}"/>
     <div id="SystemChartOverlay" class="overlay">
         {% for chart in widget.get_charts %}
-        <div id="outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}" style="width:150px;height:150px;">
+        <div id="outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}">
             <div id="inner_{{ widget.fe_identifier }}_{{ forloop.counter0 }}"></div>
         </div>
         {% endfor %}
     </div>
 </div>
 <script type="text/javascript">
-(function(){
-  function getPositionForCoordinates(x,y,containerHeight,containerWidth){
-    var containerCenter={y:containerHeight/2,x:containerWidth/2},
-        topPos =  containerCenter.y+(containerCenter.y*y) - y*containerHeight;
-        leftPos= containerCenter.x+(containerCenter.x*x);
-    return {top:topPos,left:leftPos};
-  }
   {% for chart in widget.get_charts %}
   $(function(){
     $("#systemchart_{{ widget.fe_identifier }} img").imagesLoaded(function(){
-        leonardo.fn.loadResource({src:'{% static "vis/js/charts/gauge.js" %}',callback: function(){
-          leonardo.charts.createChart("{{ chart.chart }}",$.extend({},{
-            chartSelector:"#inner_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
-            containerSelector:"#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
-            url: "{{ widget.get_data_url }}",
-            requestData: {
-              widget_id: "{{ widget.fe_identifier }}",
-              kwargs:
-                JSON.stringify({
-                  row: {{ forloop.counter0 }}
-                })
-            },
-            updateInterval:{{ widget.refresh_interval }} * 1000,
-          },JSON.parse('{{ chart.chart_config|jsonify }}')));
-        }
-      });
       var $systemchart = $("#systemchart_{{ widget.fe_identifier }} img"), 
           $chartContainer=$("#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}"), 
           chartX={{ chart.x }}, 
-          chartY={{ chart.y }},
-          placeWidgetFn = function(){
-            var chartPosition=getPositionForCoordinates(chartX,chartY,$systemchart.height(),$systemchart.width());
-            $chartContainer.css("position","absolute");
-            $chartContainer.css("left", chartPosition.left - ($chartContainer.width()/2));
-            $chartContainer.css("top",chartPosition.top - ($chartContainer.height()/2));
-      };
-      placeWidgetFn();
-      $(window).on('resize',placeWidgetFn);
+          chartY={{ chart.y }}, 
+          chartScale = {{ chart.scale }},
+          placeWidgetFn = function(){              
+              $chartContainer.css("width",($systemchart.width()*chartScale));
+              $chartContainer.css("position","absolute");
+              $chartContainer.css("top",($systemchart.width()*chartX) - ($chartContainer.height()/2));
+              $chartContainer.css("left",($systemchart.width()*chartY) - ($chartContainer.width()/2));
+              leonardo.charts.createChart("{{ chart.chart }}",$.extend({},{
+                chartSelector:"#inner_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
+                containerSelector:"#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
+                url: "{{ widget.get_data_url }}",
+                autoResize:false,
+                requestData: {
+                  widget_id: "{{ widget.fe_identifier }}",
+                  kwargs:
+                    JSON.stringify({
+                      row: {{ forloop.counter0 }}
+                    })
+                },
+                updateInterval:{{ widget.refresh_interval }} * 1000,
+              },JSON.parse('{{ chart.chart_config|jsonify }}')));
+          };
+      leonardo.fn.loadResource({src:'{% static "vis/js/charts/"|add:chart.chart|add:".js" %}',callback: placeWidgetFn});
+      var resizeTimer;
+      $(window).on('resize', function(e) {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+           leonardo.charts.removeChart("{{ chart.chart }}","#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}","#inner_{{ widget.fe_identifier }}_{{ forloop.counter0 }}");
+            placeWidgetFn();
+        }, 250);
+      });
     });
   });
   {% endfor %}
-  //console.log('{{ widget.get_charts }}');
-})();
+//console.log('{{ widget.get_charts }}');
 </script>
 {% endblock %}

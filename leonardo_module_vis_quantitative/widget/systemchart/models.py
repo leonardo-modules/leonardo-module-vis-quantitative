@@ -26,10 +26,10 @@ class SystemChartWidget(NumericWidget):
                 "chart": metric["type"],
                 "x": metric["x"],
                 "y": metric["y"],
+                "scale": metric["scale"],
                 "chart_config": {
                     "label": metric["name"],
                     "max": metric["horizon"],
-                    "scale": metric["scale"]
                 }
             }
         elif 'type' in metric and metric["type"] == 'number':
@@ -37,9 +37,19 @@ class SystemChartWidget(NumericWidget):
                 "chart": metric["type"],
                 "x": metric["x"],
                 "y": metric["y"],
+                "scale": metric["scale"],
                 "chart_config": {
                     "label": metric["name"],
-                    "scale": metric["scale"]
+                }
+            }
+        elif 'type' in metric and metric["type"] == 'isotype':
+            return {
+                "chart": metric["type"],
+                "x": metric["x"],
+                "y": metric["y"],
+                "scale": metric["scale"],
+                "chart_config": {
+                    "label": metric["name"],
                 }
             }
 

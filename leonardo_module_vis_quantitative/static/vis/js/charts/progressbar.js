@@ -39,6 +39,6 @@ var leonardo = function(leonardo) {
             self.render(config.chartSelector);
         };
     };
-    leonardo.charts.progressbar = new ProgressBar();
+    leonardo.charts.initChart("progressbar", new ProgressBar());
     return leonardo;
 }(leonardo || {});
