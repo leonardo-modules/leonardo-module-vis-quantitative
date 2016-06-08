@@ -36,7 +36,6 @@ var leonardo = function(leonardo) {
             }
         };
 
-
         this.init = function(config) {
             //create svg element
             size=$(config.containerSelector).width();
@@ -94,6 +93,6 @@ var leonardo = function(leonardo) {
 
         };
     };
-    leonardo.charts.isotype = new Isotype();
+    leonardo.charts.initChart("isotype", new Isotype());
     return leonardo;
 }(leonardo || {});

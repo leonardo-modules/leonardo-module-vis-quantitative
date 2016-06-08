@@ -48,6 +48,6 @@ var leonardo = function(leonardo) {
             $(window).resize(self.setChartHeight.bind(this,config.chartSelector));
         };
     };
-    leonardo.charts.linechart = new Linechart();
+    leonardo.charts.initChart("linechart",new Linechart());
     return leonardo;
 }(leonardo || {});

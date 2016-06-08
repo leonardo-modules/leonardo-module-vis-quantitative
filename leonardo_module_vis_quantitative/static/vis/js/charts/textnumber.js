@@ -19,6 +19,6 @@ var leonardo = function(leonardo) {
             self.render(config.chartSelector);
         };
     };
-    leonardo.charts.textnumber = new TextNumber();
+    leonardo.charts.initChart("textnumber",new TextNumber());
     return leonardo;
 }(leonardo || {});

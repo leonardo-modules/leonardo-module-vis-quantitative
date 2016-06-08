@@ -50,6 +50,6 @@ var leonardo = function(leonardo) {
             $(window).resize(self.setChartHeight.bind(this,config.chartSelector));
         };
     };
-    leonardo.charts.areachart = new Areachart();
+    leonardo.charts.initChart("areachart",new Areachart());
     return leonardo;
 }(leonardo || {});

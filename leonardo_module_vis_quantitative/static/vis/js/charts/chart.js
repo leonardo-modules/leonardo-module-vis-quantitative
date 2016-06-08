@@ -114,6 +114,15 @@ Chart.prototype =  {
 };
 var leonardo = function(leonardo) {
     leonardo.charts = leonardo.charts || {};
+    leonardo.charts.initChart = function(chartType,chartInstance){
+      if(typeof leonardo.charts[chartType] ==='object' && leonardo.charts[chartType].hasOwnProperty("instances")){
+        var actualInstances = leonardo.charts[chartType].instances;
+        leonardo.charts[chartType] = chartInstance;
+        $.extend(leonardo.charts[chartType].instances,actualInstances);
+      }else{
+          leonardo.charts[chartType] = chartInstance;
+      }
+    };
     leonardo.charts.createChart = function(chartName,config){
       if(typeof leonardo.charts[chartName] === 'object' && typeof leonardo.charts[chartName].create === 'function'){
         leonardo.charts[chartName].create(config);

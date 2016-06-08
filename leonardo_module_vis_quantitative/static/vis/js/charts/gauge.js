@@ -54,7 +54,7 @@ var leonardo = function(leonardo) {
             }
         };
     };
-    leonardo.charts.gauge = new Gauge();
+    leonardo.charts.initChart("gauge",new Gauge());
 
     function angular_gauge_pointer(config){
             this.placeholderName = config.placeholder;

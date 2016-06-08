@@ -48,6 +48,6 @@ var leonardo = function(leonardo) {
             $(window).resize(self.setChartHeight.bind(this,config.chartSelector));
         };
     };
-    leonardo.charts.barchart = new Barchart();
+    leonardo.charts.initChart("barchart", new Barchart());
     return leonardo;
 }(leonardo || {});
