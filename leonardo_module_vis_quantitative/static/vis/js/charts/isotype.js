@@ -41,9 +41,10 @@ var leonardo = function(leonardo) {
             size=$(config.containerSelector).width();
             var chart=d3.select(config.chartSelector)
                 .append("svg")
-//                .attr("viewBox","0 0 100 100");
+                .attr("viewBox","0 0 100 100")
                 .attr("width", size)
-                .attr("height", size);
+                .attr("height", size)
+                .attr("preserveAspectRatio", "xMinYMin meet");
 
             //define an icon store it in svg <defs> elements as a reusable component - this geometry can be generated from Inkscape, Illustrator or similar
             chart.append("defs")
@@ -86,6 +87,8 @@ var leonardo = function(leonardo) {
                             var whole=Math.floor(d/numCols)//calculates the y position (row number)
                         return yPadding+(whole*hBuffer);//apply the buffer and return the value
                     })
+                    .attr("width",1000)
+                    .attr("height",1000)
                     .classed("iconPlain",true);
 
             self.instances[config.chartSelector].chart = chart;
