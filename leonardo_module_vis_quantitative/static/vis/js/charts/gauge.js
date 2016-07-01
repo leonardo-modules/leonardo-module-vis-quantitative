@@ -64,20 +64,15 @@ var leonardo = function(leonardo) {
             this.configure = function(config)
             {
                 this.config = config;
-                
-                this.config.size = this.config.size * 0.9;
-                
+                //this.config.size = this.config.size * 0.9;
                 this.config.radius = this.config.size * 0.97 / 2;
                 this.config.cx = this.config.size / 2;
                 this.config.cy = this.config.size / 2;
-                
                 this.config.min = undefined != config.min ? config.min : 0; 
                 this.config.max = undefined != config.max ? config.max : 100; 
                 this.config.range = this.config.max - this.config.min;
-                
                 this.config.majorTicks = config.majorTicks || 5;
                 this.config.minorTicks = config.minorTicks || 2;
-                
                 this.config.greenColor  = config.greenColor || "#109618";
                 this.config.yellowColor = config.yellowColor || "#FF9900";
                 this.config.redColor    = config.redColor || "#DC3912";

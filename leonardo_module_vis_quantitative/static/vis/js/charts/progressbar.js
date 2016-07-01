@@ -10,7 +10,7 @@ var leonardo = function(leonardo) {
         var self = this;
         this.initialConfig.pushOrReplaceData="replace";
         this.initialConfig.strokeWidth=20;
-        this.initialConfig.strokeGap=5;
+        this.initialConfig.strokeGap=-2;
         this.initialConfig.shadow={width:1};
         this.initialConfig.display= 'radial';
 
@@ -24,7 +24,7 @@ var leonardo = function(leonardo) {
         this.init = function(config) {
             var width = $(config.containerSelector).width();
             if(config.series){
-            var metrics = config.series.length;
+                var metrics = config.series.length;
             }
             // var stroke_width = (width/2 - config.strokeGap * (metrics-1)) / (metrics+2)
             var diameter = (width - 2 * (config.strokeWidth * metrics + config.strokeGap * (metrics-1))) - 10;

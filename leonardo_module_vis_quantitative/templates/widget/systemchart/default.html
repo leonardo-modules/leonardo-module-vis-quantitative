@@ -18,12 +18,13 @@
   $(function(){
     $("#systemchart_{{ widget.fe_identifier }} img").imagesLoaded(function(){
       var $systemchart = $("#systemchart_{{ widget.fe_identifier }} img"), 
-          $chartContainer=$("#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}"), 
+          $chartContainer=$("#outer_{{ widget.fe_identifier }}_{{ forloop.counter0 }}"),
           chartX={{ chart.x }}, 
           chartY={{ chart.y }}, 
           chartScale = {{ chart.scale }},
           placeWidgetFn = function(){              
               $chartContainer.css("width",($systemchart.width()*chartScale));
+              $chartContainer.css("height",($systemchart.width()*chartScale));
               $chartContainer.css("position","absolute");
               $chartContainer.css("top",($systemchart.width()*chartX) - ($chartContainer.width()/2));
               $chartContainer.css("left",($systemchart.width()*chartY) - ($chartContainer.width()/2));
