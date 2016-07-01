@@ -18,7 +18,7 @@ var leonardo = function(leonardo) {
         this.render = function(chartSelector) {
             var $chart=$(chartSelector+" div.number");
                 chartValue=parseFloat($chart.html());
-            if(chartValue==-1){
+            if(isNaN(chartValue) || chartValue==-1){
                   $chart.html(self.getDataValue(chartSelector));
                   horizon.utils.loadAngular($chart);
             }else{
@@ -43,6 +43,8 @@ var leonardo = function(leonardo) {
             }
         };
         this.init = function(config) {
+            $(config.chartSelector).html('<div data-fittext class="number w100p h100p"></div>');
+            $(config.chartSelector).addClass("w100p h100p");
             self.render(config.chartSelector);
         };
     };

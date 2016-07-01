@@ -4,9 +4,7 @@
 {% load jsonify %}
 
 {% block content %}
-<div id="vis_{{ widget.fe_identifier }}" class="w100p h100p">
-    <div data-fittext class="number w100p h100p"></div>
-</div>
+<div id="vis_{{ widget.fe_identifier }}"></div>
 <script type="text/javascript">
 $(function(){
   leonardo.fn.loadResource({src: '{% static "vis/js/charts/textnumber.js" %}', callback: function(){

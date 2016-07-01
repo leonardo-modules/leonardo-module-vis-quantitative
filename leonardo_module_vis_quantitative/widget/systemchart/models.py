@@ -60,11 +60,23 @@ class SystemChartWidget(NumericWidget):
                 "scale": metric["scale"],
                 "chart_config": {
                     "label": metric["name"],
-                    "series":[
-                        {"labelStart": metric["name"],
-                        "value": 0,
-                        "display":10
-                    }]
+                    "series": [
+                        {
+                            "labelStart": metric["name"],
+                            "value": 0,
+                            "display": 10
+                        }
+                    ]
+                }
+            }
+        elif 'type' in metric and metric["type"] == 'textnumber':
+            return {
+                "chart": metric["type"],
+                "x": metric["x"],
+                "y": metric["y"],
+                "scale": metric["scale"],
+                "chart_config": {
+                    "label": metric["name"],
                 }
             }
 
