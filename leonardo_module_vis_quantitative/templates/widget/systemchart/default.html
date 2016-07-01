@@ -25,7 +25,7 @@
           placeWidgetFn = function(){              
               $chartContainer.css("width",($systemchart.width()*chartScale));
               $chartContainer.css("position","absolute");
-              $chartContainer.css("top",($systemchart.width()*chartX) - ($chartContainer.height()/2));
+              $chartContainer.css("top",($systemchart.width()*chartX) - ($chartContainer.width()/2));
               $chartContainer.css("left",($systemchart.width()*chartY) - ($chartContainer.width()/2));
               leonardo.charts.createChart("{{ chart.chart }}",$.extend({},{
                 chartSelector:"#inner_{{ widget.fe_identifier }}_{{ forloop.counter0 }}",
