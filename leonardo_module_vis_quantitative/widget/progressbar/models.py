@@ -41,7 +41,8 @@ class ProgressBarWidget(NumericWidget):
     def create_chart_from_metric(self, metric):
         return {
             "labelStart": metric["name"],
-            "value": 0
+            "value": 0,
+            "display":10
         }
 
     class Meta:

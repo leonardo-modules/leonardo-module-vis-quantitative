@@ -11,6 +11,8 @@ var leonardo = function(leonardo) {
         this.initialConfig.pushOrReplaceData="replace";
         this.initialConfig.strokeWidth=20;
         this.initialConfig.strokeGap=5;
+        this.initialConfig.shadow={width:1};
+        this.initialConfig.display= 'radial';
 
         this.render = function(chartSelector) {
             var data = self.instances[chartSelector].data;
@@ -21,16 +23,15 @@ var leonardo = function(leonardo) {
 
         this.init = function(config) {
             var width = $(config.containerSelector).width();
+            if(config.series){
             var metrics = config.series.length;
+            }
             // var stroke_width = (width/2 - config.strokeGap * (metrics-1)) / (metrics+2)
             var diameter = (width - 2 * (config.strokeWidth * metrics + config.strokeGap * (metrics-1))) - 10;
             console.log(config);
             self.instances[config.chartSelector].chart = new RadialProgressChart(config.chartSelector, {
                 diameter: diameter,
                 series: config.series,
-                shadow: {
-                  width: 0
-                },
                 stroke: {
                     width: config.strokeWidth,
                     gap: config.strokeGap
